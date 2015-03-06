@@ -70,9 +70,9 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   fread(xv, sizeof(float),6*header1.np_local, input);
   fclose(input);
   
-  //for(i=0;i<header1.np_local;i++) {
-  //  memcpy(&((*p)[(*num_p)+i].pos[0]),&(xv[i*6]),sizeof(float)*6);
-  // }
+  for(i=0;i<header1.np_local;i++) {
+    memcpy(&((*p)[(*num_p)+i].pos[0]),&(xv[i*6]),sizeof(float)*6);
+  }
   free(xv);
 
   input = check_fopen(PIDfile,"rb");
@@ -85,10 +85,10 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   fread(PID, sizeof(int64_t),header1.np_local, input);
   fclose(input);
 
-  //for(i=0;i<header1.np_local;i++) {
-  //  (*p)[(*num_p)+i].id = PID[i];
-  //}
+  for(i=0;i<header1.np_local;i++) {
+    (*p)[(*num_p)+i].id = PID[i];
+  }
   
   free(PID);
-  // *num_p += header1.np_local;
+  *num_p += header1.np_local;
 }
