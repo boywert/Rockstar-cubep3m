@@ -53,8 +53,8 @@ void load_particles_cubep3m(char *filename, int block, struct particle **p, int6
     int cur_checkpoint,cur_projection,cur_halofind;
     float mass_p;
   } header1,header2;
-  xvfile = str_replace(filename,"<cubep3m_magic>","xv");
-  PIDfile = str_replace(filename,"<cubep3m_magic>","PID"); 
+  xvfile = str_replace(filename,"<xvPID>","xv");
+  PIDfile = str_replace(filename,"<xvPID>","PID"); 
 
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
