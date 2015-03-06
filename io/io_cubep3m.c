@@ -53,9 +53,9 @@ void load_particles_cubep3m(char *filename, int block, struct particle **p, int6
     float mass_p;
   } header1,header2;
   printf("filename = %s\n",filename);
-  string_replace(buffer,filename,"<Q3xvPID>","xv");
+  string_replace(buffer,filename,"<xvPID>","xv");
   sprintf(xvfile,"%s",buffer);
-  string_replace(buffer,filename,"<Q3xvPID>","PID");
+  string_replace(buffer,filename,"<xvPID>","PID");
   sprintf(PIDfile,"%s",buffer);
   
   printf("xv = %s, pid = %s\n",xvfile,PIDfile);
