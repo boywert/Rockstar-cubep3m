@@ -13,6 +13,7 @@
 void string_replace(char *out, char *in, char *find, char *replace) {
   char *p;
   int i,j;
+  
   int lenin = strlen(in);
   int lenfind = strlen(find);
   int lenreplace = strlen(replace);
@@ -45,7 +46,7 @@ void rescale_xv(float *xv, int np_local) {
 void load_particles_cubep3m(char *filename, int block, struct particle **p, int64_t *num_p) {
   FILE *input;
   char xvfile[1024], PIDfile[1024];
-  char buffer[1024];
+  char buffer[1024] = {'\0'};
   float *xv;
   int64_t i,n, *PID;
   struct cubep3m_header {
