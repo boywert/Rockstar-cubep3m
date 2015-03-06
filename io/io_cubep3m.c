@@ -39,7 +39,7 @@ void rescale_xv(float *xv, int np_local) {
   float RHO_CRIT_0 = 2.7755397e11;   //[h^2*Msun]/[Mpc^3] 
 }
 
-void load_particles_cubep3m(char *filename, int block, struct particle **p, int64_t *num_p) {
+void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p) {
   FILE *input;
   char xvfile[1024], PIDfile[1024];
   char buffer[1024] = {'\0'};
@@ -62,7 +62,7 @@ void load_particles_cubep3m(char *filename, int block, struct particle **p, int6
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
   
-  *p = (struct particle *)check_realloc(*p, 100*sizeof(struct particle), "Allocating particles.");
+  *p = (struct particle *)check_realloc(*p, ((*num_p)+header1.np_local)*sizeof(struct particle), "Allocating particles.");
 
   
 
