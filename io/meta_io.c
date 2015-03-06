@@ -62,10 +62,6 @@ void get_input_filename(char *buffer, int maxlen, int64_t snap, int64_t block) {
   assert(snap < NUM_SNAPS);
   snprintf(buffer, maxlen, "%s/", INBASE);
   out=strlen(buffer);
-  /* if (!strncasecmp(FILE_FORMAT, "CUBEP3M", 7)) {  */
-  /*   strcpy(FILENAME, ""); */
-  /*   strcpy(FILENAME,"<snap>"); */
-  /* } */
   for (; (i<l)&&(out < (maxlen-1)); i++) {
     if (FILENAME[i] != '<') { buffer[out]=FILENAME[i]; buffer[out+1]=0; }
     else {
@@ -127,7 +123,7 @@ void read_particles(char *filename) {
     load_particles_tipsy(filename, &p, &num_p);
   }
   else if (!strncasecmp(FILE_FORMAT, "CUBEP3M", 7)) {
-     load_particles_cubep3m(filename, &p, &num_p);
+    load_particles_cubep3m(filename, &p, &num_p);
   }
   else if (!strncasecmp(FILE_FORMAT, "AREPO", 5)) {
 #ifdef ENABLE_HDF5

@@ -12,13 +12,10 @@
 
 void string_replace(char *out, char *in, char *find, char *replace) {
   char *p;
-  int i,j;
-  
+  int i,j=0;
   int lenin = strlen(in);
   int lenfind = strlen(find);
   int lenreplace = strlen(replace);
-  // strcpy(out,"\0");
-  j = 0;
   if((p=strstr(in,find)) != NULL) {
     int first_replace = p-&in[0];
     for(i=0;i<first_replace;i++) {
@@ -29,14 +26,13 @@ void string_replace(char *out, char *in, char *find, char *replace) {
       out[i+first_replace]=replace[i]; j++;
     }
     for(i=0;i<lenin-first_replace-lenfind;i++) {
-      // printf("i=%d,c=%c\n",i,in[first_replace+lenfind+i]);
       out[first_replace+lenreplace+i] = in[first_replace+lenfind+i];j++;
     }
     //strcat(out,"\0");
   }
   else
     sprintf(out,"%s",in);
-  printf("expect = %d, real = %d, count = %d\n",lenin+lenreplace-lenfind,strlen(out),j);
+  // printf("expect = %d, real = %d, count = %d\n",lenin+lenreplace-lenfind,strlen(out),j);
 }
 void rescale_xv(float *xv, int np_local) {
   float H0 = 100.;   //[h*km]/[sec*Mpc]
@@ -65,10 +61,10 @@ void load_particles_cubep3m(char *filename, int block, struct particle **p, int6
   printf("xv = %s, pid = %s\n",xvfile,PIDfile);
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
-  printf("just before reallocate, np_local = %d\n",header1.np_local);
+  
+  *p = (struct particle *)check_realloc(*p, ((*num_p)+header1.np_local)*sizeof(struct particle), "Allocating particles.");
 
-  // *p = (struct particle *)check_realloc(*p, ((*num_p)+header1.np_local)*sizeof(struct particle), "Allocating particles.");
-  printf("just after reallocate, np_local = %d\n",header1.np_local);
+  exit(0)
 
   xv = malloc(sizeof(float)*header1.np_local*6);
   fread(xv, sizeof(float),6*header1.np_local, input);
