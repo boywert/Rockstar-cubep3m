@@ -29,7 +29,7 @@ void string_replace(char *out, char *in, char *find, char *replace) {
       printf("i=%d,c=%c\n",i,in[first_replace+lenfind+i]);
       out[first_replace+lenreplace+i] = in[first_replace+lenfind+i];
     }
-    strcat(out,"\0");
+    //strcat(out,"\0");
   }
   else
     sprintf(out,"%s",in);
