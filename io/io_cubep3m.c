@@ -45,7 +45,7 @@ void load_particles_cubep3m(char *prefix, int block, struct particle **p, int64_
   fclose(input);
   
   for(i=0;i<header1.np_local;i++) {
-    memcpy(&((*p)[(*num_p)+i].pos[0]),xv(i*6),sizeof(float)*6);
+    memcpy(&((*p)[(*num_p)+i].pos[0]),xv[i*6],sizeof(float)*6);
   }
   free(xv);
 
