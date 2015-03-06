@@ -32,7 +32,7 @@ void string_replace(char *out, char *in, char *find, char *replace) {
     strcat(out,"\0");
   }
   else
-    sprintf(out,"%s"in);
+    sprintf(out,"%s",in);
 }
 void rescale_xv(float *xv, int np_local) {
   float H0 = 100.;   //[h*km]/[sec*Mpc]
