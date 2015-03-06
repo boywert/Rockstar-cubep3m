@@ -29,7 +29,7 @@ void string_replace(char *out, char *in, char *find, char *replace) {
       out[i+first_replace]=replace[i]; j++;
     }
     for(i=0;i<lenin-first_replace-lenfind;i++) {
-      printf("i=%d,c=%c\n",i,in[first_replace+lenfind+i]);
+      // printf("i=%d,c=%c\n",i,in[first_replace+lenfind+i]);
       out[first_replace+lenreplace+i] = in[first_replace+lenfind+i];j++;
     }
     //strcat(out,"\0");
@@ -63,7 +63,6 @@ void load_particles_cubep3m(char *filename, int block, struct particle **p, int6
   string_replace(buffer,filename,"xvPID","PID");
   strcpy(PIDfile,buffer);
   printf("xv = %s, pid = %s\n",xvfile,PIDfile);
-  exit(0);
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
   
