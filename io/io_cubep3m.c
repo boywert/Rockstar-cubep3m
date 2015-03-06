@@ -55,17 +55,17 @@ void rescale_xv(float *xv, int np_local, int block, float a) {
   float  lunit_compute = BOX_SIZE/(2.*(float)CUBEP3M_NP); //Mpc/h
   int i,j,k;
   float offset1,offset2,offset3;
+  PARTICLE_MASS = munit_compute;
   for(k=0;k<CUBEP3M_NDIM;k++)
     for(j=0;j<CUBEP3M_NDIM;j++)
-      for(i=0;i<CUBEP3M_NDIM;i++) {
+      for(i=0;i<CUBEP3M_NDIM;i++) 
 	if(block == i+j*CUBEP3M_NDIM+k*CUBEP3M_NDIM*CUBEP3M_NDIM) {
 	  offset1 = (float)i*BOX_SIZE/(float)CUBEP3M_NDIM;
 	  offset2 = (float)j*BOX_SIZE/(float)CUBEP3M_NDIM;
 	  offset3 = (float)k*BOX_SIZE/(float)CUBEP3M_NDIM;
 	}
-      }
   
-  for(i=0;i<np_local;i++){
+  for(i=0;i<np_local;i++) {
     xv[i] *= lunit_compute;
     xv[i] += offset1;
     xv[i+1] *= lunit_compute;
