@@ -55,9 +55,9 @@ void load_particles_cubep3m(char *filename, int block, struct particle **p, int6
   } header1,header2;
   printf("filename = %s\n",filename);
   string_replace(buffer,filename,"xvPID","xv");
-  strcpy(xvfile,buffer)
+  strcpy(xvfile,buffer);
   string_replace(buffer,filename,"xvPID","PID");
-  strcpy(PIDfile,buffer)
+  strcpy(PIDfile,buffer);
   printf("xv = %s, pid = %s\n",xvfile,PIDfile);
   exit(0);
   input = check_fopen(xvfile,"rb");
