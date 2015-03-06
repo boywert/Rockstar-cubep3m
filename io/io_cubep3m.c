@@ -12,28 +12,30 @@
 
 void string_replace(char *out, char *in, char *find, char *replace) {
   char *p;
-  int i;
+  int i,j;
   int lenin = strlen(in);
   int lenfind = strlen(find);
   int lenreplace = strlen(replace);
   strcpy(out,"\0");
+  j = 0;
   if((p=strstr(in,find)) != NULL) {
     int first_replace = p-&in[0];
     for(i=0;i<first_replace;i++) {
       out[i] = in[i];
+      j++;
     }
     for(i=0;i<lenreplace;i++) {
-      out[i+first_replace]=replace[i];
+      out[i+first_replace]=replace[i]; j++;
     }
     for(i=0;i<lenin-first_replace-lenfind;i++) {
       printf("i=%d,c=%c\n",i,in[first_replace+lenfind+i]);
-      out[first_replace+lenreplace+i] = in[first_replace+lenfind+i];
+      out[first_replace+lenreplace+i] = in[first_replace+lenfind+i];j++;
     }
     strcat(out,"\0");
   }
   else
     sprintf(out,"%s",in);
-  printf("expect = %d, real = %d\n",lenin+lenreplace-lenfind,strlen(out));
+  printf("expect = %d, real = %d, count = %d\n",lenin+lenreplace-lenfind,strlen(out),j);
 }
 void rescale_xv(float *xv, int np_local) {
   float H0 = 100.;   //[h*km]/[sec*Mpc]
