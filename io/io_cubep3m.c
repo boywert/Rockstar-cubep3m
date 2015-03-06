@@ -10,39 +10,28 @@
 #include "../particle.h"
 #include "../config_vars.h"
 
-void get_xvfile(char *buffer, char *string, int maxlen) {
-  int64_t i=0, out=0, l=strlen(string);
-  snprintf(buffer, maxlen, "");
-  out=strlen(buffer);
-  for (; (i<l)&&(out < (maxlen-1)); i++) {
-    if (string[i] != '<') { buffer[out]=string[i]; buffer[out+1]=0; }
-    else {
-      if (!strncmp(string+i, "<xvPID>", 7)) {
-	i+=6;
-	snprintf(buffer+out, maxlen-out,"xv");
-      }
-      else buffer[out] = string[i];
+void string_replace(char *out, char *in, char *find, char *replace) {
+  char *p;
+  int i;
+  int lenin = strlen(in);
+  int lenfind = strlen(find);
+  int lenreplace = strlen(replace);
+  if((p=strstr(in,find)) != NULL) {
+    int first_replace = p-&in[0];
+    for(i=0;i<first_replace;i++) {
+      out[i] = in[i];
     }
-    out = strlen(buffer);
-  }
-  buffer[out] = 0;
-}
-void get_PIDfile(char *buffer, char *string, int maxlen) {
-  int64_t i=0, out=0, l=strlen(string);
-  snprintf(buffer, maxlen, "");
-  out=strlen(buffer);
-  for (; (i<l)&&(out < (maxlen-1)); i++) {
-    if (string[i] != '<') { buffer[out]=string[i]; buffer[out+1]=0; }
-    else {
-      if (!strncmp(string+i, "<xvPID>", 7)) {
-	i+=6;
-	snprintf(buffer+out, maxlen-out,"PID");
-      }
-      else buffer[out] = string[i];
+    for(i=0;i<lenreplace;i++) {
+      out[i+first_replace]=replace[i];
     }
-    out = strlen(buffer);
+    for(i=0;i<lenin-first_replace-lenfind;i++) {
+      out[first_replace+lenreplace+i] = in[first_replace+lenfind+i];
+    }
+    strcat(out,"\0");
   }
-  buffer[out] = 0;
+  else
+    strcat(out,in);
+
 }
 void rescale_xv(float *xv, int np_local) {
   float H0 = 100.;   //[h*km]/[sec*Mpc]
@@ -63,9 +52,10 @@ void load_particles_cubep3m(char *filename, int block, struct particle **p, int6
     int cur_checkpoint,cur_projection,cur_halofind;
     float mass_p;
   } header1,header2;
-  get_xvfile(buffer,filename,1024);
+  printf("filename = %s\n",filename);
+  string_replace(buffer,filename,"<xvPID>","xv");
   sprintf(xvfile,"%s",buffer);
-  get_PIDfile(buffer,filename,1024);
+  string_replace(buffer,filename,"<xvPID>","PID");
   sprintf(PIDfile,"%s",buffer);
   
   printf("xv = %s, pid = %s\n",xvfile,PIDfile);
