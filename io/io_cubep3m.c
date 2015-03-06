@@ -56,8 +56,8 @@ void load_particles_cubep3m(char *filename, int block, struct particle **p, int6
   sprintf(xvfile,"%s",buffer);
   string_replace(buffer,filename,"xvPID","PID");
   sprintf(PIDfile,"%s",buffer);
-  exit(0);
   printf("xv = %s, pid = %s\n",xvfile,PIDfile);
+  exit(0);
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
   
