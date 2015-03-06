@@ -5,6 +5,6 @@
 #include "../particle.h"
 
 //void gzip_file(char *filename);
-void load_particles_cubep3m(char *prefix, struct particle **p, int64_t *num_p);
+void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p);
 
 #endif /* _IO_CUBEP3M_H */

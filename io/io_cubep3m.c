@@ -10,17 +10,38 @@
 #include "../particle.h"
 #include "../config_vars.h"
 
-
+char *str_replace(char *string, char *sub, char *replace)
+{
+  if(!string || !sub || !replace) return NULL;
+  char *pos = string; int found = 0;
+  while((pos = strstr(pos, sub))){
+    pos += strlen(sub);
+    found++;
+  }
+  if(found == 0) return NULL;
+  int size = ((strlen(string) - (strlen(sub) * found)) + (strlen(replace) * found)) + 1;
+  char *result = (char*)malloc(size);
+  pos = string;
+  char *pos1;
+  while((pos1 = strstr(pos, sub))){
+    int len = (pos1 - pos);
+    strncat(result, pos, len);
+    strncat(result, replace, strlen(replace));
+    pos = (pos1 + strlen(sub));
+  }
+  if(pos != (string + strlen(string)))
+    strncat(result, pos, (string - pos));
+  return result;
+}
 void rescale_xv(float *xv, int np_local) {
   float H0 = 100.;   //[h*km]/[sec*Mpc]
   float RHO_CRIT_0 = 2.7755397e11;   //[h^2*Msun]/[Mpc^3] 
 }
 
-void load_particles_cubep3m(char *prefix, int block, struct particle **p, int64_t *num_p) {
+void load_particles_cubep3m(char *filename, int block, struct particle **p, int64_t *num_p) {
   FILE *input;
-  char buffer[1024];
-  char xvfile[1024];
-  char PIDfile[1024];
+  char *xvfile, *PIDfile;
+  
   float *xv;
   int64_t i,n, *PID;
   struct cubep3m_header {
@@ -31,9 +52,8 @@ void load_particles_cubep3m(char *prefix, int block, struct particle **p, int64_
     int cur_checkpoint,cur_projection,cur_halofind;
     float mass_p;
   } header1,header2;
-
-  sprintf(xvfile,"%sxv%d.dat",prefix,block);
-  sprintf(PIDfile,"%sPID%d.dat",prefix,block);
+  xvfile = str_replace(filename,"<cubep3m_magic>","xv");
+  PIDfile = str_replace(filename,"<cubep3m_magic>","PID"); 
 
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
