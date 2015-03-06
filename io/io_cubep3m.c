@@ -62,9 +62,9 @@ void load_particles_cubep3m(char *filename, int block, struct particle **p, int6
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
   
-  *p = (struct particle *)check_realloc(*p, ((*num_p)+header1.np_local)*sizeof(struct particle), "Allocating particles.");
+  *p = (struct particle *)check_realloc(*p, 100*sizeof(struct particle), "Allocating particles.");
 
-  exit(0);
+  
 
   xv = malloc(sizeof(float)*header1.np_local*6);
   fread(xv, sizeof(float),6*header1.np_local, input);
