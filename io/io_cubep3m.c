@@ -16,7 +16,7 @@ void string_replace(char *out, char *in, char *find, char *replace) {
   int lenin = strlen(in);
   int lenfind = strlen(find);
   int lenreplace = strlen(replace);
-  strcpy(out,"\0");
+  // strcpy(out,"\0");
   j = 0;
   if((p=strstr(in,find)) != NULL) {
     int first_replace = p-&in[0];
