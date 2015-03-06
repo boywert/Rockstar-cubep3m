@@ -33,7 +33,7 @@ void string_replace(char *out, char *in, char *find, char *replace) {
   }
   else
     sprintf(out,"%s",in);
-  print("expect = %d, real = %d\n",lenin+lenreplace-lenfind,strlen(out));
+  printf("expect = %d, real = %d\n",lenin+lenreplace-lenfind,strlen(out));
 }
 void rescale_xv(float *xv, int np_local) {
   float H0 = 100.;   //[h*km]/[sec*Mpc]
