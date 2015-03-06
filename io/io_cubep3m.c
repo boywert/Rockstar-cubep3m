@@ -67,16 +67,16 @@ void load_particles_cubep3m(char *filename, int block, struct particle **p, int6
   fread(&header1, sizeof(struct cubep3m_header),1, input);
   printf("just before reallocate, np_local = %d\n",header1.np_local);
 
-  *p = (struct particle *)check_realloc(*p, ((*num_p)+header1.np_local)*sizeof(struct particle), "Allocating particles.");
+  // *p = (struct particle *)check_realloc(*p, ((*num_p)+header1.np_local)*sizeof(struct particle), "Allocating particles.");
   printf("just after reallocate, np_local = %d\n",header1.np_local);
-  exit(0);
+  // exit(0);
   xv = malloc(sizeof(float)*header1.np_local*6);
   fread(xv, sizeof(float),6*header1.np_local, input);
   fclose(input);
   
-  for(i=0;i<header1.np_local;i++) {
-    memcpy(&((*p)[(*num_p)+i].pos[0]),&(xv[i*6]),sizeof(float)*6);
-  }
+  //for(i=0;i<header1.np_local;i++) {
+  //  memcpy(&((*p)[(*num_p)+i].pos[0]),&(xv[i*6]),sizeof(float)*6);
+  // }
   free(xv);
 
   /* input = check_fopen(PIDfile,"rb"); */
@@ -93,5 +93,5 @@ void load_particles_cubep3m(char *filename, int block, struct particle **p, int6
   /* } */
   
   /* free(PID); */
-  *num_p += header1.np_local;
+  // *num_p += header1.np_local;
 }
