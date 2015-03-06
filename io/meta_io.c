@@ -62,10 +62,10 @@ void get_input_filename(char *buffer, int maxlen, int64_t snap, int64_t block) {
   assert(snap < NUM_SNAPS);
   snprintf(buffer, maxlen, "%s/", INBASE);
   out=strlen(buffer);
-  if (!strncasecmp(FILE_FORMAT, "CUBEP3M", 7)) { 
-    strcpy(FILENAME, "");
-    strcpy(FILENAME,"<snap>");
-  }
+  /* if (!strncasecmp(FILE_FORMAT, "CUBEP3M", 7)) {  */
+  /*   strcpy(FILENAME, ""); */
+  /*   strcpy(FILENAME,"<snap>"); */
+  /* } */
   for (; (i<l)&&(out < (maxlen-1)); i++) {
     if (FILENAME[i] != '<') { buffer[out]=FILENAME[i]; buffer[out+1]=0; }
     else {
