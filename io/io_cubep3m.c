@@ -30,7 +30,7 @@ void string_replace(char *out, char *in, char *find, char *replace) {
     strcat(out,"\0");
   }
   else
-    strcat(out,in);
+    strcpy(out,in);
 
 }
 void rescale_xv(float *xv, int np_local) {
