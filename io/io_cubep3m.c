@@ -12,7 +12,7 @@
 
 char *str_replace(char *string, char *sub, char *replace)
 {
-  fprintf(stderr,"string = %s,sub=%s,replace=%s\n",string,sub,replace);
+  printf("string = %s,sub=%s,replace=%s\n",string,sub,replace);
   if(!string || !sub || !replace) return NULL;
   char *pos = string; int found = 0;
   while((pos = strstr(pos, sub))){
