@@ -10,29 +10,41 @@
 #include "../particle.h"
 #include "../config_vars.h"
 
-char *str_replace(char *string, char *sub, char *replace)
-{
-  printf("string = %s,sub=%s,replace=%s\n",string,sub,replace);
-  if(!string || !sub || !replace) return NULL;
-  char *pos = string; int found = 0;
-  while((pos = strstr(pos, sub))){
-    pos += strlen(sub);
-    found++;
+void get_xvfile(char *buffer, char *string, int maxlen) {
+  int64_t i=0, out=0, l=strlen(string);
+  assert(snap < NUM_SNAPS);
+  snprintf(buffer, maxlen, "");
+  out=strlen(buffer);
+  for (; (i<l)&&(out < (maxlen-1)); i++) {
+    if (string[i] != '<') { buffer[out]=string[i]; buffer[out+1]=0; }
+    else {
+      if (!strncmp(string+i, "<xvPID>", 7)) {
+	i+=6;
+	snprintf(buffer+out, maxlen-out,"xv",);
+      }
+      else buffer[out] = string[i];
+    }
+    out = strlen(buffer);
   }
-  if(found == 0) return NULL;
-  int size = ((strlen(string) - (strlen(sub) * found)) + (strlen(replace) * found)) + 1;
-  char *result = (char*)malloc(size);
-  pos = string;
-  char *pos1;
-  while((pos1 = strstr(pos, sub))){
-    int len = (pos1 - pos);
-    strncat(result, pos, len);
-    strncat(result, replace, strlen(replace));
-    pos = (pos1 + strlen(sub));
+  buffer[out] = 0;
+}
+void get_PIDfile(char *buffer, char *string, int maxlen) {
+  int64_t i=0, out=0, l=strlen(string);
+  assert(snap < NUM_SNAPS);
+  snprintf(buffer, maxlen, "");
+  out=strlen(buffer);
+  for (; (i<l)&&(out < (maxlen-1)); i++) {
+    if (string[i] != '<') { buffer[out]=string[i]; buffer[out+1]=0; }
+    else {
+      if (!strncmp(string+i, "<xvPID>", 7)) {
+	i+=6;
+	snprintf(buffer+out, maxlen-out,"xv",);
+      }
+      else buffer[out] = string[i];
+    }
+    out = strlen(buffer);
   }
-  if(pos != (string + strlen(string)))
-    strncat(result, pos, (string - pos));
-  return result;
+  buffer[out] = 0;
 }
 void rescale_xv(float *xv, int np_local) {
   float H0 = 100.;   //[h*km]/[sec*Mpc]
@@ -41,8 +53,8 @@ void rescale_xv(float *xv, int np_local) {
 
 void load_particles_cubep3m(char *filename, int block, struct particle **p, int64_t *num_p) {
   FILE *input;
-  char *xvfile, *PIDfile;
-  
+  char xvfile[], PIDfile[1024];
+  char buffer[1024];
   float *xv;
   int64_t i,n, *PID;
   struct cubep3m_header {
@@ -53,9 +65,12 @@ void load_particles_cubep3m(char *filename, int block, struct particle **p, int6
     int cur_checkpoint,cur_projection,cur_halofind;
     float mass_p;
   } header1,header2;
-  xvfile = str_replace(filename,"<Q3xvPID>","xv");
-  PIDfile = str_replace(filename,"<Q3xvPID>","PID"); 
-
+  get_xvfile(buffer,filename,1024);
+  sprintf(xvfile,"%s",buffer);
+  get_PIDfile(buffer,filename,1024);
+  sprintf(PIDfile,"%s",buffer);
+  
+  printf("xv = %s, pid = %s\n",xvfile,PIDfile);
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
   
