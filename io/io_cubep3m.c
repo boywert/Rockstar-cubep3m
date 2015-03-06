@@ -69,7 +69,7 @@ void load_particles_cubep3m(char *filename, int block, struct particle **p, int6
 
   // *p = (struct particle *)check_realloc(*p, ((*num_p)+header1.np_local)*sizeof(struct particle), "Allocating particles.");
   printf("just after reallocate, np_local = %d\n",header1.np_local);
-  // exit(0);
+
   xv = malloc(sizeof(float)*header1.np_local*6);
   fread(xv, sizeof(float),6*header1.np_local, input);
   fclose(input);
@@ -79,19 +79,20 @@ void load_particles_cubep3m(char *filename, int block, struct particle **p, int6
   // }
   free(xv);
 
-  /* input = check_fopen(PIDfile,"rb"); */
-  /* fread(&header2, sizeof(struct cubep3m_header),1, input); */
-  /* if(header1.np_local != header2.np_local) { */
-  /*   printf("np_local not consistent."); */
-  /*   exit(1); */
-  /* } */
-  /* PID = malloc(sizeof(int64_t)*header1.np_local); */
-  /* fread(PID, sizeof(int64_t),header1.np_local, input); */
-  /* fclose(input); */
-  /* for(i=0;i<header1.np_local;i++) { */
-  /*   (*p)[(*num_p)+i].id = PID[i]; */
-  /* } */
+  input = check_fopen(PIDfile,"rb");
+  fread(&header2, sizeof(struct cubep3m_header),1, input);
+  if(header1.np_local != header2.np_local) {
+    printf("np_local not consistent.");
+    exit(1);
+  }
+  PID = malloc(sizeof(int64_t)*header1.np_local);
+  fread(PID, sizeof(int64_t),header1.np_local, input);
+  fclose(input);
+
+  //for(i=0;i<header1.np_local;i++) {
+  //  (*p)[(*num_p)+i].id = PID[i];
+  //}
   
-  /* free(PID); */
+  free(PID);
   // *num_p += header1.np_local;
 }
