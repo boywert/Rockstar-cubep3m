@@ -12,7 +12,6 @@
 
 void get_xvfile(char *buffer, char *string, int maxlen) {
   int64_t i=0, out=0, l=strlen(string);
-  assert(snap < NUM_SNAPS);
   snprintf(buffer, maxlen, "");
   out=strlen(buffer);
   for (; (i<l)&&(out < (maxlen-1)); i++) {
@@ -20,7 +19,7 @@ void get_xvfile(char *buffer, char *string, int maxlen) {
     else {
       if (!strncmp(string+i, "<xvPID>", 7)) {
 	i+=6;
-	snprintf(buffer+out, maxlen-out,"xv",);
+	snprintf(buffer+out, maxlen-out,"xv");
       }
       else buffer[out] = string[i];
     }
@@ -38,7 +37,7 @@ void get_PIDfile(char *buffer, char *string, int maxlen) {
     else {
       if (!strncmp(string+i, "<xvPID>", 7)) {
 	i+=6;
-	snprintf(buffer+out, maxlen-out,"xv",);
+	snprintf(buffer+out, maxlen-out,"PID");
       }
       else buffer[out] = string[i];
     }
