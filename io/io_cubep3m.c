@@ -16,6 +16,7 @@ void string_replace(char *out, char *in, char *find, char *replace) {
   int lenin = strlen(in);
   int lenfind = strlen(find);
   int lenreplace = strlen(replace);
+  strcpy(out,"\0");
   if((p=strstr(in,find)) != NULL) {
     int first_replace = p-&in[0];
     for(i=0;i<first_replace;i++) {
@@ -25,12 +26,13 @@ void string_replace(char *out, char *in, char *find, char *replace) {
       out[i+first_replace]=replace[i];
     }
     for(i=0;i<lenin-first_replace-lenfind;i++) {
+      printf("i=%d,c=%c\n",i,in[first_replace+lenfind+i]);
       out[first_replace+lenreplace+i] = in[first_replace+lenfind+i];
     }
     strcat(out,"\0");
   }
   else
-    strcpy(out,in);
+    sprintf(out,"%s"in);
 }
 void rescale_xv(float *xv, int np_local) {
   float H0 = 100.;   //[h*km]/[sec*Mpc]
