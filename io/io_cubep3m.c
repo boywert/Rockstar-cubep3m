@@ -29,7 +29,6 @@ void get_xvfile(char *buffer, char *string, int maxlen) {
 }
 void get_PIDfile(char *buffer, char *string, int maxlen) {
   int64_t i=0, out=0, l=strlen(string);
-  assert(snap < NUM_SNAPS);
   snprintf(buffer, maxlen, "");
   out=strlen(buffer);
   for (; (i<l)&&(out < (maxlen-1)); i++) {
@@ -52,7 +51,7 @@ void rescale_xv(float *xv, int np_local) {
 
 void load_particles_cubep3m(char *filename, int block, struct particle **p, int64_t *num_p) {
   FILE *input;
-  char xvfile[], PIDfile[1024];
+  char xvfile[1024], PIDfile[1024];
   char buffer[1024];
   float *xv;
   int64_t i,n, *PID;
