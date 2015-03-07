@@ -65,17 +65,17 @@ void rescale_xv(float *xv, int np_local, int block, float a) {
 	}
   printf("a = %f,offset1 = %f, offset2 = %f, offset3 = %f\n",a,offset1,offset2,offset3);
   for(i=0;i<np_local;i++) {
-     printf("%d, %f %f %f %f %f %f\n",i,xv[i],xv[i+1],xv[i+2],xv[i+3],xv[i+4],xv[i+5]);
-    xv[i] *= lunit_compute;
-    xv[i] += offset1;
-    xv[i+1] *= lunit_compute;
-    xv[i+1] += offset2; 
-    xv[i+2] *= lunit_compute; 
-    xv[1+2] += offset3;
-    xv[i+3] *= vunit_compute;
-    xv[i+4] *= vunit_compute;
-    xv[i+5] *= vunit_compute;
-    printf("=====> %f %f %f %f %f %f\n",xv[i],xv[i+1],xv[i+2],xv[i+3],xv[i+4],xv[i+5]);
+     printf("%d, %f %f %f %f %f %f\n",i,xv[i*6],xv[i*6+1],xv[i*6+2],xv[i*6+3],xv[i*6+4],xv[i*6+5]);
+    xv[6*i] *= lunit_compute;
+    xv[6*i] += offset1;
+    xv[i*6+1] *= lunit_compute;
+    xv[i*6+1] += offset2; 
+    xv[i*6+2] *= lunit_compute; 
+    xv[1*6+2] += offset3;
+    xv[i*6+3] *= vunit_compute;
+    xv[i*6+4] *= vunit_compute;
+    xv[i*6+5] *= vunit_compute;
+    printf("===> %f %f %f %f %f %f\n",xv[i*6],xv[i*6+1],xv[i*6+2],xv[i*6+3],xv[i*6+4],xv[i*6+5]);
   }
 }
 
@@ -95,6 +95,7 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
     int cur_checkpoint,cur_projection,cur_halofind;
     float mass_p;
   } header1,header2;
+
   printf("filename = %s\n",filename);
   block = string_replace_getblock(buffer,filename,"xvPID","xv");
   strcpy(xvfile,buffer);
@@ -103,7 +104,7 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   printf("block = %d, xv = %s, pid = %s\n",block,xvfile,PIDfile);
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
-  
+  printf("a = %f, t = %f\n",header1.a,header1.t);
   *p = (struct particle *)check_realloc(*p, ((*num_p)+header1.np_local)*sizeof(struct particle), "Allocating particles.");
 
   
