@@ -47,13 +47,11 @@ int string_replace_getblock(char *out, char *in, char *find, char *replace) {
 
 void rescale_xv(float *xv, int np_local, int block, float a) {
   float H0 = 100.;   //[h*km]/[sec*Mpc]
-  float RHO_CRIT_0 = 2.7755397e11;   //[h^2*Msun]/[Mpc^3]
-  float Omega0 = 0.3;
-  float vunit_compute = BOX_SIZE * 1.5 * sqrt(Omega0) * H0 / (2.*(float)CUBEP3M_NP)/a;  //!km/s
-  float munit_compute = BOX_SIZE * BOX_SIZE * BOX_SIZE * Omega0 * RHO_CRIT_0 / ((float)CUBEP3M_NP*(float)CUBEP3M_NP*(float)CUBEP3M_NP); // ! Msun/h
+  float vunit_compute = BOX_SIZE * 1.5 * sqrt(Om) * H0 / (2.*(float)CUBEP3M_NP)/a;  //!km/s
   float  lunit_compute = BOX_SIZE/(2.*(float)CUBEP3M_NP); //Mpc/h
   int i,j,k;
   float offset1,offset2,offset3;
+  offset1 = offset2 = offset3 = 0.;
   PARTICLE_MASS = munit_compute;
   for(k=0;k<CUBEP3M_NDIM;k++) 
     for(j=0;j<CUBEP3M_NDIM;j++) 
@@ -111,9 +109,10 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   xv = malloc(sizeof(float)*header1.np_local*6);
   fread(xv, sizeof(float),6*header1.np_local, input);
   fclose(input);
-
+  SCALE_NOW = header1.a;
+  PARALLEL_MASS = Om*CRITICAL_DENSITY * pow(BOX_SIZE, 3) / TOTAL_PARTICLES;
   rescale_xv(xv, header1.np_local, block, header1.a);  
-
+  AVG_PARTICLE_SPACING = cbrt(PARTICLE_MASS / (Om*CRITICAL_DENSITY));
   for(i=0;i<header1.np_local;i++) {
     memcpy(&((*p)[(*num_p)+i].pos[0]),&(xv[i*6]),sizeof(float)*6);
   }
