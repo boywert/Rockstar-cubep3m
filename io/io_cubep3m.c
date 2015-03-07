@@ -45,7 +45,7 @@ int string_replace_getblock(char *out, char *in, char *find, char *replace) {
   }
 }
 
-void transfer_xv(float *xv, int np_local, int block, float a) {
+void rescale_xv(float *xv, int np_local, int block, float a) {
   float H0 = 100.;   //[h*km]/[sec*Mpc]
   float RHO_CRIT_0 = 2.7755397e11;   //[h^2*Msun]/[Mpc^3]
   float Omega0 = 0.3;
