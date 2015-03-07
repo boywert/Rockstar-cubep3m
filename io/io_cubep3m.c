@@ -65,6 +65,7 @@ void rescale_xv(float *xv, int np_local, int block, float a) {
 	}
   printf("offset1 = %f, offset2 = %f, offset3 = %f\n",offset1,offset2,offset3);
   for(i=0;i<np_local;i++) {
+     printf("%d, %f %f %f %f %f %f\n",i,xv[i],xv[i+1],xv[i+2],xv[i+3],xv[i+4],xv[i+5]);
     xv[i] *= lunit_compute;
     xv[i] += offset1;
     xv[i+1] *= lunit_compute;
@@ -74,6 +75,7 @@ void rescale_xv(float *xv, int np_local, int block, float a) {
     xv[i+3] *= vunit_compute;
     xv[i+4] *= vunit_compute;
     xv[i+5] *= vunit_compute;
+    printf("=====> %f %f %f %f %f %f\n",i,xv[i],xv[i+1],xv[i+2],xv[i+3],xv[i+4],xv[i+5]);
   }
 }
 
@@ -111,8 +113,8 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   fclose(input);
 
   rescale_xv(xv, header1.np_local, block, header1.a);  
-  for(i=0;i<100;i++)
-    printf("%d, %f %f %f %f %f %f\n",i,xv[i],xv[i+1],xv[i+2],xv[i+3],xv[i+4],xv[i+5]);
+  /* for(i=0;i<100;i++) */
+  /*   printf("%d, %f %f %f %f %f %f\n",i,xv[i],xv[i+1],xv[i+2],xv[i+3],xv[i+4],xv[i+5]); */
   exit(1);
   for(i=0;i<header1.np_local;i++) {
     memcpy(&((*p)[(*num_p)+i].pos[0]),&(xv[i*6]),sizeof(float)*6);
