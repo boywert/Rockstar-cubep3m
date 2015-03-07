@@ -68,7 +68,6 @@ int main(int argc, char **argv)
     if (snap >= 0) {
       if (block < 0) {
 	for (block=0; block<NUM_BLOCKS; block++) {
-	  printf("Running Rockstar on %d.%d: %s\n",snap,block,buffer);
 	  get_input_filename(buffer, 1024, snap, block);
 	  read_particles(buffer);
 	}

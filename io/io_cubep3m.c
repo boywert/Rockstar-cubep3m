@@ -138,6 +138,7 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   else if(CUBEP3M_PID == 0) {
     for(i=0;i<header1.np_local;i++) {
       (*p)[(*num_p)+i].id = (int64_t)block*CUBEP3M_NP*CUBEP3M_NP*CUBEP3M_NP/(CUBEP3M_NDIM*CUBEP3M_NDIM*CUBEP3M_NDIM) + i ;
+    }
   }
   *num_p += header1.np_local;
 }
