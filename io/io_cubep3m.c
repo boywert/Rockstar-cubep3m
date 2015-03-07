@@ -63,7 +63,7 @@ void rescale_xv(float *xv, int np_local, int block, float a) {
 	  offset2 = (float)j*BOX_SIZE/(float)CUBEP3M_NDIM;
 	  offset3 = (float)k*BOX_SIZE/(float)CUBEP3M_NDIM;
 	}
-  printf("offset1 = %f, offset2 = %f, offset3 = %f\n",offset1,offset2,offset3);
+  printf("a = %f,offset1 = %f, offset2 = %f, offset3 = %f\n",a,offset1,offset2,offset3);
   for(i=0;i<np_local;i++) {
      printf("%d, %f %f %f %f %f %f\n",i,xv[i],xv[i+1],xv[i+2],xv[i+3],xv[i+4],xv[i+5]);
     xv[i] *= lunit_compute;
