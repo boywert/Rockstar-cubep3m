@@ -5,10 +5,12 @@
 #include <inttypes.h>
 #include <math.h>
 #include <string.h>
+#include "io_util.h"
 #include "../check_syscalls.h"
-#include "stringparse.h"
 #include "../particle.h"
 #include "../config_vars.h"
+#include "../universal_constants.h"
+#include "../config.h"
 
 int string_replace_getblock(char *out, char *in, char *find, char *replace) {
   char *p,*q;
@@ -52,7 +54,7 @@ void rescale_xv(float *xv, int np_local, int block, float a) {
   int i,j,k;
   float offset1,offset2,offset3;
   offset1 = offset2 = offset3 = 0.;
-  PARTICLE_MASS = munit_compute;
+
   for(k=0;k<CUBEP3M_NDIM;k++) 
     for(j=0;j<CUBEP3M_NDIM;j++) 
       for(i=0;i<CUBEP3M_NDIM;i++) {
@@ -109,8 +111,11 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   xv = malloc(sizeof(float)*header1.np_local*6);
   fread(xv, sizeof(float),6*header1.np_local, input);
   fclose(input);
+
+  TOTAL_PARTICLES = (int64_t)CUBEP3M_NP*(int64_t)CUBEP3M_NP*(int64_t)CUBEP3M_NP;
   SCALE_NOW = header1.a;
-  PARALLEL_MASS = Om*CRITICAL_DENSITY * pow(BOX_SIZE, 3) / TOTAL_PARTICLES;
+  PARTICLE_MASS = Om*CRITICAL_DENSITY * pow(BOX_SIZE, 3) / TOTAL_PARTICLES;
+
   rescale_xv(xv, header1.np_local, block, header1.a);  
   AVG_PARTICLE_SPACING = cbrt(PARTICLE_MASS / (Om*CRITICAL_DENSITY));
   for(i=0;i<header1.np_local;i++) {
