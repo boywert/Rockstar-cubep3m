@@ -112,7 +112,7 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
 
   rescale_xv(xv, header1.np_local, block, header1.a);  
   for(i=0;i<100;i++)
-    printf(%d, %f %f %f %f %f %f\n,i,xv[i],xv[i+1],xv[i+2],xv[i+3],xv[i+4],xv[i+5]);
+    printf("%d, %f %f %f %f %f %f\n",i,xv[i],xv[i+1],xv[i+2],xv[i+3],xv[i+4],xv[i+5]);
   exit(1);
   for(i=0;i<header1.np_local;i++) {
     memcpy(&((*p)[(*num_p)+i].pos[0]),&(xv[i*6]),sizeof(float)*6);
