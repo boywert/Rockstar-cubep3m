@@ -63,10 +63,6 @@ void rescale_xv(float *xv, int np_local, int block, float a) {
 	  offset2 = (float)j*BOX_SIZE/(float)CUBEP3M_NDIM;
 	  offset3 = (float)k*BOX_SIZE/(float)CUBEP3M_NDIM;
 	}
-	else {
-	  printf("cannot find the block number in range\n");
-	  exit(1);
-	}
       }
   for(i=0;i<np_local;i++) {
     xv[6*i] *= lunit_compute;
