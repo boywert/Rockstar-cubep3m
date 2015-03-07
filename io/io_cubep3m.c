@@ -75,7 +75,7 @@ void rescale_xv(float *xv, int np_local, int block, float a) {
     xv[i+3] *= vunit_compute;
     xv[i+4] *= vunit_compute;
     xv[i+5] *= vunit_compute;
-    printf("=====> %f %f %f %f %f %f\n",i,xv[i],xv[i+1],xv[i+2],xv[i+3],xv[i+4],xv[i+5]);
+    printf("=====> %f %f %f %f %f %f\n",xv[i],xv[i+1],xv[i+2],xv[i+3],xv[i+4],xv[i+5]);
   }
 }
 
