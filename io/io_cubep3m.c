@@ -57,15 +57,18 @@ void rescale_xv(float *xv, int np_local, int block, float a) {
   PARTICLE_MASS = munit_compute;
   for(k=0;k<CUBEP3M_NDIM;k++) 
     for(j=0;j<CUBEP3M_NDIM;j++) 
-      for(i=0;i<CUBEP3M_NDIM;i++) 
+      for(i=0;i<CUBEP3M_NDIM;i++) {
 	if(block == i+j*CUBEP3M_NDIM+k*CUBEP3M_NDIM*CUBEP3M_NDIM) {
 	  offset1 = (float)i*BOX_SIZE/(float)CUBEP3M_NDIM;
 	  offset2 = (float)j*BOX_SIZE/(float)CUBEP3M_NDIM;
 	  offset3 = (float)k*BOX_SIZE/(float)CUBEP3M_NDIM;
 	}
-  printf("a = %f,offset1 = %f, offset2 = %f, offset3 = %f\n",a,offset1,offset2,offset3);
+	else {
+	  printf("cannot find the block number in range\n");
+	  exit(1);
+	}
+      }
   for(i=0;i<np_local;i++) {
-    // printf("%d, %f %f %f %f %f %f\n",i,xv[i*6],xv[i*6+1],xv[i*6+2],xv[i*6+3],xv[i*6+4],xv[i*6+5]);
     xv[6*i] *= lunit_compute;
     xv[6*i] += offset1;
     xv[i*6+1] *= lunit_compute;
@@ -75,7 +78,6 @@ void rescale_xv(float *xv, int np_local, int block, float a) {
     xv[i*6+3] *= vunit_compute;
     xv[i*6+4] *= vunit_compute;
     xv[i*6+5] *= vunit_compute;
-    // printf("===> %f %f %f %f %f %f\n",xv[i*6],xv[i*6+1],xv[i*6+2],xv[i*6+3],xv[i*6+4],xv[i*6+5]);
   }
 }
 
@@ -96,15 +98,14 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
     float mass_p;
   } header1,header2;
 
-  printf("filename = %s\n",filename);
   block = string_replace_getblock(buffer,filename,"xvPID","xv");
   strcpy(xvfile,buffer);
   block = string_replace_getblock(buffer,filename,"xvPID","PID");
   strcpy(PIDfile,buffer);
-  printf("block = %d, xv = %s, pid = %s\n",block,xvfile,PIDfile);
+
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
-  printf("a = %f, t = %f\n",header1.a,header1.t);
+
   *p = (struct particle *)check_realloc(*p, ((*num_p)+header1.np_local)*sizeof(struct particle), "Allocating particles.");
 
   xv = malloc(sizeof(float)*header1.np_local*6);
@@ -112,27 +113,31 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   fclose(input);
 
   rescale_xv(xv, header1.np_local, block, header1.a);  
-  /* for(i=0;i<100;i++) */
-  /*   printf("%d, %f %f %f %f %f %f\n",i,xv[i],xv[i+1],xv[i+2],xv[i+3],xv[i+4],xv[i+5]); */
+
   for(i=0;i<header1.np_local;i++) {
     memcpy(&((*p)[(*num_p)+i].pos[0]),&(xv[i*6]),sizeof(float)*6);
   }
   free(xv);
+  if(CUBEP3M_PID == 1) {
+    input = check_fopen(PIDfile,"rb");
+    fread(&header2, sizeof(struct cubep3m_header),1, input);
+    if(header1.np_local != header2.np_local) {
+      printf("np_local not consistent.");
+      exit(1);
+    }
+    PID = malloc(sizeof(int64_t)*header1.np_local);
+    fread(PID, sizeof(int64_t),header1.np_local, input);
+    fclose(input);
 
-  input = check_fopen(PIDfile,"rb");
-  fread(&header2, sizeof(struct cubep3m_header),1, input);
-  if(header1.np_local != header2.np_local) {
-    printf("np_local not consistent.");
-    exit(1);
-  }
-  PID = malloc(sizeof(int64_t)*header1.np_local);
-  fread(PID, sizeof(int64_t),header1.np_local, input);
-  fclose(input);
-
-  for(i=0;i<header1.np_local;i++) {
-    (*p)[(*num_p)+i].id = PID[i];
-  }
+    for(i=0;i<header1.np_local;i++) {
+      (*p)[(*num_p)+i].id = PID[i];
+    }
   
-  free(PID);
+    free(PID);
+  }
+  else if(CUBEP3M_PID == 0) {
+    for(i=0;i<header1.np_local;i++) {
+      (*p)[(*num_p)+i].id = (int64_t)block*CUBEP3M_NP*CUBEP3M_NP*CUBEP3M_NP/(CUBEP3M_NDIM*CUBEP3M_NDIM*CUBEP3M_NDIM) + i ;
+  }
   *num_p += header1.np_local;
 }

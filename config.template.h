@@ -105,7 +105,7 @@ real(UNBOUND_THRESHOLD, 0.5);
 integer(ALT_NFW_METRIC, 0);
 integer(EXTRA_PROFILING, 1);
 
-integer(TOTAL_PARTICLES, 8589934592);
+integer(TOTAL_PARTICLES, 0);
 real(BOX_SIZE, 250); //In Mpc/h
 integer(OUTPUT_LEVELS, 0);
 real3(DUMP_PARTICLES, "0 0 0");
@@ -116,3 +116,4 @@ integer(SINGLE_SNAP, 0);
 
 integer(CUBEP3M_NDIM,6);
 integer(CUBEP3M_NP,1728);
+integer(CUBEP3M_PID,1);
