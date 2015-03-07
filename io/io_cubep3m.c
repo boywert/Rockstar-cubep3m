@@ -43,10 +43,9 @@ int string_replace_getblock(char *out, char *in, char *find, char *replace) {
     sprintf(out,"%s",in);
     return -1;
   }
-  // printf("expect = %d, real = %d, count = %d\n",lenin+lenreplace-lenfind,strlen(out),j);
 }
 
-void rescale_xv(float *xv, int np_local, int block, float a) {
+void transfer_xv(float *xv, int np_local, int block, float a) {
   float H0 = 100.;   //[h*km]/[sec*Mpc]
   float RHO_CRIT_0 = 2.7755397e11;   //[h^2*Msun]/[Mpc^3]
   float Omega0 = 0.3;
@@ -56,8 +55,8 @@ void rescale_xv(float *xv, int np_local, int block, float a) {
   int i,j,k;
   float offset1,offset2,offset3;
   PARTICLE_MASS = munit_compute;
-  for(k=0;k<CUBEP3M_NDIM;k++)
-    for(j=0;j<CUBEP3M_NDIM;j++)
+  for(k=0;k<CUBEP3M_NDIM;k++) 
+    for(j=0;j<CUBEP3M_NDIM;j++) 
       for(i=0;i<CUBEP3M_NDIM;i++) 
 	if(block == i+j*CUBEP3M_NDIM+k*CUBEP3M_NDIM*CUBEP3M_NDIM) {
 	  offset1 = (float)i*BOX_SIZE/(float)CUBEP3M_NDIM;
@@ -69,8 +68,8 @@ void rescale_xv(float *xv, int np_local, int block, float a) {
     xv[i] *= lunit_compute;
     xv[i] += offset1;
     xv[i+1] *= lunit_compute;
-    xv[i+1] += offset2;
-    xv[i+2] *= lunit_compute;
+    xv[i+1] += offset2; 
+    xv[i+2] *= lunit_compute; 
     xv[1+2] += offset3;
     xv[i+3] *= vunit_compute;
     xv[i+4] *= vunit_compute;
@@ -100,7 +99,6 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   block = string_replace_getblock(buffer,filename,"xvPID","PID");
   strcpy(PIDfile,buffer);
   printf("block = %d, xv = %s, pid = %s\n",block,xvfile,PIDfile);
-  // exit(0);
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
   
@@ -113,7 +111,9 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   fclose(input);
 
   rescale_xv(xv, header1.np_local, block, header1.a);  
-
+  for(i=0;i<100;i++)
+    printf(%d, %f %f %f %f %f %f\n,i,xv[i],xv[i+1],xv[i+2],xv[i+3],xv[i+4],xv[i+5]);
+  exit(1);
   for(i=0;i<header1.np_local;i++) {
     memcpy(&((*p)[(*num_p)+i].pos[0]),&(xv[i*6]),sizeof(float)*6);
   }
