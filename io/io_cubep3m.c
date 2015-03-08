@@ -111,7 +111,7 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   TOTAL_PARTICLES = (int64_t)CUBEP3M_NP*(int64_t)CUBEP3M_NP*(int64_t)CUBEP3M_NP;
   SCALE_NOW = header1.a;
   PARTICLE_MASS = Om*CRITICAL_DENSITY * pow(BOX_SIZE, 3) / TOTAL_PARTICLES;
-
+  printf("particle mass = %f\n",PARTICLE_MASS);
   rescale_xv(xv, header1.np_local, block, header1.a);  
   AVG_PARTICLE_SPACING = cbrt(PARTICLE_MASS / (Om*CRITICAL_DENSITY));
   for(i=0;i<header1.np_local;i++) {
@@ -135,10 +135,11 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   
     free(PID);
   }
-  else if(CUBEP3M_PID == 0) {
-    for(i=0;i<header1.np_local;i++) {
-      (*p)[(*num_p)+i].id = (int64_t)block*CUBEP3M_NP*CUBEP3M_NP*CUBEP3M_NP/(CUBEP3M_NDIM*CUBEP3M_NDIM*CUBEP3M_NDIM) + i ;
-    }
+  else if(CUBEP3M_PID == 0)
+    IGNORE_PARTICLE_IDS = 1;
+  else {
+    fprintf(stderr, "[Error] Unrecognized CUBEP3M_PID = %d!\n", CUBEP3M_PID);
+    exit(1);
   }
   *num_p += header1.np_local;
 }
