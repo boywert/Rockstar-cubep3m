@@ -104,7 +104,7 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
 
   *p = (struct particle *)check_realloc(*p, ((*num_p)+header1.np_local)*sizeof(struct particle), "Allocating particles.");
 
-  xv = malloc(sizeof(float)*header1.np_local*6);
+  xv = check_realloc(NULL,sizeof(float)*header1.np_local*6,"Allocating Cubep3m XV buffer.");
   fread(xv, sizeof(float),6*header1.np_local, input);
   fclose(input);
 
@@ -125,7 +125,7 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
       printf("np_local not consistent.");
       exit(1);
     }
-    PID = malloc(sizeof(int64_t)*header1.np_local);
+    PID = check_realloc(NULL,sizeof(int64_t)*header1.np_local,"Allocating Cubep3m PIDs buffer.");
     fread(PID, sizeof(int64_t),header1.np_local, input);
     fclose(input);
 
@@ -138,7 +138,7 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   else if(CUBEP3M_PID == 0)
     IGNORE_PARTICLE_IDS = 1;
   else {
-    fprintf(stderr, "[Error] Unrecognized CUBEP3M_PID = %d!\n", CUBEP3M_PID);
+    fprintf(stderr, "[Error] Unrecognized CUBEP3M_PID = %" PRId64 "!\n", CUBEP3M_PID);
     exit(1);
   }
   *num_p += header1.np_local;
