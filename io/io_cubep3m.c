@@ -12,6 +12,16 @@
 #include "../universal_constants.h"
 #include "../config.h"
 
+struct cubep3m_header {
+  int np_local;
+  float a,t,tau;
+  int nts;
+  float dt_f_acc,dt_pp_acc,dt_c_acc;
+  int cur_checkpoint,cur_projection,cur_halofind;
+  float mass_p;
+};
+
+
 int string_replace_getblock(char *out, char *in, char *find, char *replace) {
   char *p,*q;
   char buf[1000] = {"\0"};
@@ -47,33 +57,40 @@ int string_replace_getblock(char *out, char *in, char *find, char *replace) {
   }
 }
 
-void rescale_xv(float *xv, int np_local, int block, float a) {
+void cubep3m_read_PID(FILE *fp, int block, int np_local, struct particle **p, int64_t *num_p) {
+  int i;
+  // start after header
+  for(i=0;i<np_local;i++) 
+    fread(&((*p)[(*num_p)+i].id), sizeof(int64_t),1, fp);  
+
+}
+void cubep3m_read_xv(FILE *fp, int block, int np_local, float a, struct particle **p, int64_t *num_p) {
   float H0 = 100.;   //[h*km]/[sec*Mpc]
   float vunit_compute = BOX_SIZE * 1.5 * sqrt(Om) * H0 / (2.*(float)CUBEP3M_NP)/a;  //!km/s
   float  lunit_compute = BOX_SIZE/(2.*(float)CUBEP3M_NP); //Mpc/h
   int i,j,k;
-  float offset1,offset2,offset3;
-  offset1 = offset2 = offset3 = 0.;
+  float offset[3] = {0.};
+  float buf[6];
 
   for(k=0;k<CUBEP3M_NDIM;k++) 
     for(j=0;j<CUBEP3M_NDIM;j++) 
       for(i=0;i<CUBEP3M_NDIM;i++) {
 	if(block == i+j*CUBEP3M_NDIM+k*CUBEP3M_NDIM*CUBEP3M_NDIM) {
-	  offset1 = (float)i*BOX_SIZE/(float)CUBEP3M_NDIM;
-	  offset2 = (float)j*BOX_SIZE/(float)CUBEP3M_NDIM;
-	  offset3 = (float)k*BOX_SIZE/(float)CUBEP3M_NDIM;
+	  offset[0] = (float)i*BOX_SIZE/(float)CUBEP3M_NDIM;
+	  offset[1] = (float)j*BOX_SIZE/(float)CUBEP3M_NDIM;
+	  offset[2] = (float)k*BOX_SIZE/(float)CUBEP3M_NDIM;
 	}
       }
+  // start after header
   for(i=0;i<np_local;i++) {
-    xv[6*i] *= lunit_compute;
-    xv[6*i] += offset1;
-    xv[i*6+1] *= lunit_compute;
-    xv[i*6+1] += offset2; 
-    xv[i*6+2] *= lunit_compute; 
-    xv[1*6+2] += offset3;
-    xv[i*6+3] *= vunit_compute;
-    xv[i*6+4] *= vunit_compute;
-    xv[i*6+5] *= vunit_compute;
+    fread(buf, sizeof(float),6, fp);
+    for(j=0;j<3;j++) {
+      buf[j] *= lunit_compute;
+      buf[j] += offset[j];
+    }
+    for(j=3;j<6;j++)
+      buf[j] *= vunit_compute;
+    memcpy(&((*p)[(*num_p)+i].pos[0]),buf,sizeof(float)*6);    
   }
 }
 
@@ -82,17 +99,8 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   FILE *input;
   char xvfile[1024], PIDfile[1024];
   char buffer[1024] = {'\0'};
-  float *xv;
-  int64_t i, *PID;
   int block;
-  struct cubep3m_header {
-    int np_local;
-    float a,t,tau;
-    int nts;
-    float dt_f_acc,dt_pp_acc,dt_c_acc;
-    int cur_checkpoint,cur_projection,cur_halofind;
-    float mass_p;
-  } header1,header2;
+  struct cubep3m_header header1,header2;
 
   block = string_replace_getblock(buffer,filename,"xvPID","xv");
   strcpy(xvfile,buffer);
@@ -101,23 +109,17 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
 
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
-
   *p = (struct particle *)check_realloc(*p, ((*num_p)+header1.np_local)*sizeof(struct particle), "Allocating particles.");
 
-  xv = check_realloc(NULL,sizeof(float)*header1.np_local*6,"Allocating Cubep3m XV buffer.");
-  fread(xv, sizeof(float),6*header1.np_local, input);
+  cubep3m_read_xv(input, block, header1.np_local, header1.a, p, num_p);
   fclose(input);
-
+  
   TOTAL_PARTICLES = (int64_t)CUBEP3M_NP*(int64_t)CUBEP3M_NP*(int64_t)CUBEP3M_NP;
   SCALE_NOW = header1.a;
   PARTICLE_MASS = Om*CRITICAL_DENSITY * pow(BOX_SIZE, 3) / TOTAL_PARTICLES;
-  printf("particle mass = %f\n",PARTICLE_MASS);
-  rescale_xv(xv, header1.np_local, block, header1.a);  
   AVG_PARTICLE_SPACING = cbrt(PARTICLE_MASS / (Om*CRITICAL_DENSITY));
-  for(i=0;i<header1.np_local;i++) {
-    memcpy(&((*p)[(*num_p)+i].pos[0]),&(xv[i*6]),sizeof(float)*6);
-  }
-  free(xv);
+
+
   if(CUBEP3M_PID == 1) {
     input = check_fopen(PIDfile,"rb");
     fread(&header2, sizeof(struct cubep3m_header),1, input);
@@ -125,15 +127,8 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
       printf("np_local not consistent.");
       exit(1);
     }
-    PID = check_realloc(NULL,sizeof(int64_t)*header1.np_local,"Allocating Cubep3m PIDs buffer.");
-    fread(PID, sizeof(int64_t),header1.np_local, input);
+    cubep3m_read_PID(input, block, header1.np_local, p, num_p);
     fclose(input);
-
-    for(i=0;i<header1.np_local;i++) {
-      (*p)[(*num_p)+i].id = PID[i];
-    }
-  
-    free(PID);
   }
   else if(CUBEP3M_PID == 0)
     IGNORE_PARTICLE_IDS = 1;
