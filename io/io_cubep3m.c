@@ -131,10 +131,11 @@ void cubep3m_read_zip2015(FILE *fp0, FILE *fp1, FILE *fp2, FILE *fp3, int block,
     printf("Counted particles are not consistent.\n");
     exit(1);
   }
-  /* FILE* testfp = check_fopen("test.xv","wb+"); */
-  /* for(i=0;np_local;i++) */
-  /*   fwrite(&((*p)[(*num_p)+i].pos[0]),sizeof(float),6,testfp); */
-  /* fclose(testfp); */
+  FILE* testfp;
+  testfp = check_fopen("test.xv","wb+");
+  for(i=0;np_local;i++)
+    fwrite(&((*p)[(*num_p)+i].pos[0]),sizeof(float),6,testfp);
+  fclose(testfp);
 }
 
 void cubep3m_read_xv(FILE *fp, int block, int np_local, float a, struct particle **p, int64_t *num_p) {
