@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 	read_particles(buffer);
       }
     }
-
+    
     output_config(NULL);
     rockstar(NULL, 0);
     if (block==NUM_BLOCKS) block = 0;

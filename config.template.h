@@ -115,5 +115,6 @@ real(AVG_PARTICLE_SPACING, 0); //Auto-generated
 integer(SINGLE_SNAP, 0);
 
 integer(CUBEP3M_NDIM,6);
+integer(CUBEP3M_NCDIM,228);
 integer(CUBEP3M_NP,1728);
 integer(CUBEP3M_PID,1);
