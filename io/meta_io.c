@@ -122,12 +122,12 @@ void read_particles(char *filename) {
   else if (!strncasecmp(FILE_FORMAT, "TIPSY", 5)) {
     load_particles_tipsy(filename, &p, &num_p);
   }
-  else if (!strncasecmp(FILE_FORMAT, "CUBEP3M", 7)) {
-    load_particles_cubep3m(filename, &p, &num_p);
-  }
   else if (!strncasecmp(FILE_FORMAT, "CUBEP3M_ZIP2015", 15)) {
     load_particles_cubep3m_zip2015(filename, &p, &num_p);
   }  
+  else if (!strncasecmp(FILE_FORMAT, "CUBEP3M", 7)) {
+    load_particles_cubep3m(filename, &p, &num_p);
+  }
   else if (!strncasecmp(FILE_FORMAT, "AREPO", 5)) {
 #ifdef ENABLE_HDF5
     load_particles_arepo(filename, &p, &num_p);
