@@ -122,7 +122,7 @@ void read_particles(char *filename) {
   else if (!strncasecmp(FILE_FORMAT, "TIPSY", 5)) {
     load_particles_tipsy(filename, &p, &num_p);
   }
-  else if (!strncasecmp(FILE_FORMAT, "CUBEP3M_ZIP2015", 15)) {
+  else if (!strncasecmp(FILE_FORMAT, "ZCUBEP3M", 8)) {
     load_particles_cubep3m_zip2015(filename, &p, &num_p);
   }  
   else if (!strncasecmp(FILE_FORMAT, "CUBEP3M", 7)) {
