@@ -118,12 +118,12 @@ void cubep3m_read_zip2015(FILE *fp0, FILE *fp1, FILE *fp2, FILE *fp3, int block,
 	for(n=0;n<rhoc_i4;n++) {
 	  fread(xi1,sizeof(uint8_t),3,fp0);
 	  fread(vi2,sizeof(int16_t),3,fp1);
-	  (*p)[(*num_p)+cur_p].pos[0] = mesh_scale*(((float)xi1[0]+0.5)/256.+i); //*lunit_compute + offset[0];
-	  (*p)[(*num_p)+cur_p].pos[1] = mesh_scale*(((float)xi1[1]+0.5)/256.+j); //*lunit_compute + offset[1];
-	  (*p)[(*num_p)+cur_p].pos[2] = mesh_scale*(((float)xi1[2]+0.5)/256.+k); //*lunit_compute + offset[2];
-	  (*p)[(*num_p)+cur_p].pos[3] = (float)vi2[0]/header1.v_r2; //*vunit_compute;
-	  (*p)[(*num_p)+cur_p].pos[4] = (float)vi2[1]/header1.v_r2; //*vunit_compute;
-	  (*p)[(*num_p)+cur_p].pos[5] = (float)vi2[2]/header1.v_r2; //*vunit_compute;
+	  (*p)[(*num_p)+cur_p].pos[0] = mesh_scale*(((float)xi1[0]+0.5)/256.+i)*lunit_compute + offset[0];
+	  (*p)[(*num_p)+cur_p].pos[1] = mesh_scale*(((float)xi1[1]+0.5)/256.+j)*lunit_compute + offset[1];
+	  (*p)[(*num_p)+cur_p].pos[2] = mesh_scale*(((float)xi1[2]+0.5)/256.+k)*lunit_compute + offset[2];
+	  (*p)[(*num_p)+cur_p].pos[3] = (float)vi2[0]/header1.v_r2*vunit_compute;
+	  (*p)[(*num_p)+cur_p].pos[4] = (float)vi2[1]/header1.v_r2*vunit_compute;
+	  (*p)[(*num_p)+cur_p].pos[5] = (float)vi2[2]/header1.v_r2*vunit_compute;
 	  cur_p++;
 	}
       }
@@ -131,11 +131,11 @@ void cubep3m_read_zip2015(FILE *fp0, FILE *fp1, FILE *fp2, FILE *fp3, int block,
     printf("Counted particles are not consistent.\n");
     exit(1);
   }
-  FILE* testfp;
-  testfp = check_fopen("test.xv","wb+");
-  for(i=0;np_local;i++)
-    fwrite(&((*p)[(*num_p)+i].pos[0]),sizeof(float),6,testfp);
-  fclose(testfp);
+  /* FILE* testfp; */
+  /* testfp = check_fopen("test.xv","wb+"); */
+  /* for(i=0;i<np_local;i++) */
+  /*   fwrite(&((*p)[(*num_p)+i].pos[0]),sizeof(float),6,testfp); */
+  /* fclose(testfp); */
 }
 
 void cubep3m_read_xv(FILE *fp, int block, int np_local, float a, struct particle **p, int64_t *num_p) {
