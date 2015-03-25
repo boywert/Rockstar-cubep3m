@@ -44,7 +44,7 @@ struct projection *prj = NULL;
 struct projection_request *prq = NULL;
 int64_t num_proj = 0;
 int64_t in_error_state = 0;
-int64_t RECIPIENT_BUFFER=100000;
+int64_t RECIPIENT_BUFFER=10000;
 
 FILE *profile_out = NULL;
 
