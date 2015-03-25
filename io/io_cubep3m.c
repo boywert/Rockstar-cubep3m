@@ -167,7 +167,7 @@ void cubep3m_read_xv(FILE *fp, int block, int np_local, float a, struct particle
       }
       for(j=3;j<6;j++)
 	buffer[6*i+j] *= vunit_compute;
-      memcpy(&((*p)[(*num_p)+k*CUBEP3M_BUFFER_SIZE+i].pos[0]),&(buffer[i]),sizeof(float)*6);    
+      memcpy(&((*p)[(*num_p)+k*CUBEP3M_BUFFER_SIZE+i].pos[0]),&(buffer[6*i]),sizeof(float)*6);    
     }
   }
 }
