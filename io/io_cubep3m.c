@@ -48,6 +48,7 @@ int string_replace_getblock(char *out, char *in, char *find, char *replace) {
     for(i=0;i<lenin-first_replace-lenfind;i++) {
       out[first_replace+lenreplace+i] = in[first_replace+lenfind+i];j++;
     }
+    out[j] = 0;
     // get block by checking the number before .dat
     q = strstr(in,".dat");
     int last_block_pos = q-&in[0];
