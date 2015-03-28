@@ -86,7 +86,6 @@ struct recipient *add_recipient(int64_t struct_size, int64_t c) {
   recv_from_socket(c, &(r->chunk), sizeof(int64_t));
   r->address = recv_msg_nolength(c, r->address);
   r->port = recv_msg_nolength(c, r->port);
-  fprintf(stderr,"[INFO] num_recipients = %d\n",(int)num_recipients);
   return r;
 }
 
