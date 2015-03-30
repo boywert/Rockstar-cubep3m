@@ -75,10 +75,8 @@ void cubep3m_read_PID(FILE *fp, int block, int np_local, struct particle **p, in
   for (j=0;j<=np_local/CUBEP3M_BUFFER_SIZE;j++) {
     read_n = MIN(np_local-j*CUBEP3M_BUFFER_SIZE,CUBEP3M_BUFFER_SIZE);
     fread(buffer, sizeof(int64_t),read_n, fp);
-    for(i=0;i<read_n;i++)  {
-      memcpy(&((*p)[(*num_p)+j*CUBEP3M_BUFFER_SIZE+i].id), &(buffer[i]),sizeof(int64_t));
-      fprintf(stderr,"%" PRId64 ": %" PRId64 "\n", (*num_p)+j*CUBEP3M_BUFFER_SIZE+i,(*p)[(*num_p)+j*CUBEP3M_BUFFER_SIZE+i].id);
-    }
+    for(i=0;i<read_n;i++) 
+      memcpy(&((*p)[(*num_p)+j*CUBEP3M_BUFFER_SIZE+i].id), &(buffer[i]),sizeof(int64_t));  
   }
 }
 
@@ -215,7 +213,6 @@ void load_particles_cubep3m_zip2015(char *filename, struct particle **p, int64_t
 
   if(CUBEP3M_PID == 1) {
     IGNORE_PARTICLE_IDS = 0;
-    printf("reading %s\n",PIDfile);
     input = check_fopen(PIDfile,"rb");
     fread(&header2, sizeof(struct cubep3m_header),1, input);
     if(header1.np_local != header2.np_local) {
