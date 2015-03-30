@@ -213,6 +213,7 @@ void load_particles_cubep3m_zip2015(char *filename, struct particle **p, int64_t
 
 
   if(CUBEP3M_PID == 1) {
+    printf("reading %s\n",PIDfile);
     input = check_fopen(PIDfile,"rb");
     fread(&header2, sizeof(struct cubep3m_header),1, input);
     if(header1.np_local != header2.np_local) {
