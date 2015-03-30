@@ -302,9 +302,10 @@ void build_particle_tree(void) {
   struct particle *last_p;
   tree = fast3tree_init(num_p, p);
   rockstar_res = fast3tree_results_init();
-  if (IGNORE_PARTICLE_IDS)
+  if (IGNORE_PARTICLE_IDS) {
+    sprintf(stderr,"We are ignoring PID\n");
     for (i=0; i<num_p; i++) p[i].id = i;
-
+  }
   if (num_p<2) return;
   last_p = p+(num_p-1);
   for (i=num_p-2; i>=0; i--) {
