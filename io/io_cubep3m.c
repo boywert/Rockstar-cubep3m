@@ -211,7 +211,7 @@ void load_particles_cubep3m_zip2015(char *filename, struct particle **p, int64_t
   PARTICLE_MASS = Om*CRITICAL_DENSITY * pow(BOX_SIZE, 3) / TOTAL_PARTICLES;
   AVG_PARTICLE_SPACING = cbrt(PARTICLE_MASS / (Om*CRITICAL_DENSITY));
 
-
+  printf("PID = %d\n",(int)CUBEP3M_PID);
   if(CUBEP3M_PID == 1) {
     printf("reading %s\n",PIDfile);
     input = check_fopen(PIDfile,"rb");
