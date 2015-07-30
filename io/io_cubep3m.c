@@ -35,7 +35,7 @@ void byte_swap(void* input, int len) {
   unsigned char a;
   unsigned char* e = (unsigned char *)input;
   int half = len/2;
-  int i,j;
+  int i;
   if(len%2 == 1) {
     fprintf(stderr,"Trying to swap odd-byte thing.\nExit\n");
     exit(1);
@@ -64,9 +64,7 @@ static inline void swap_cubep3m_header(struct cubep3m_header* h) {
 static inline void swap_cubep3m_header_extend(struct cubep3m_header_extend* h) {
   byte_swap(&(h->v_r2),4);
 }
-void checkswap(struct cubep3m_header* h) {
-  if()
-}
+
 int string_replace_getblock(char *out, char *in, char *find, char *replace) {
   char *p,*q;
   char buf[1000] = {"\0"};
