@@ -259,7 +259,7 @@ void load_particles_cubep3m_zip2015(char *filename, struct particle **p, int64_t
   if(header1.mass_p != 8.)
     FORCE_BYTESWAP = 1;
   if(FORCE_BYTESWAP) {
-    swap_cubep3m_header(*header1);
+    swap_cubep3m_header(&header1);
     if(header1.mass_p != 8.) {
       printf("mass_p = %g\nExit\n");
       exit(1);
@@ -316,7 +316,7 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   if(header1.mass_p != 8.)
     FORCE_BYTESWAP = 1;
   if(FORCE_BYTESWAP) {
-    swap_cubep3m_header(*header1);
+    swap_cubep3m_header(&header1);
     if(header1.mass_p != 8.) {
       printf("mass_p = %g\nExit\n");
       exit(1);
