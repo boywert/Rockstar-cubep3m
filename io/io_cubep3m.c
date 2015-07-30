@@ -248,7 +248,7 @@ void load_particles_cubep3m_zip2015(char *filename, struct particle **p, int64_t
   strcpy(zip3_file,buffer);
   block = string_replace_getblock(buffer,filename,"xvPID","PID");
   strcpy(PIDfile,buffer);
-
+  printf("file = %s\n",PIDfile);
   zip_fp[0] = check_fopen(zip0_file,"rb");
   zip_fp[1] = check_fopen(zip1_file,"rb");
   zip_fp[2] = check_fopen(zip2_file,"rb");
