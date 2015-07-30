@@ -256,16 +256,18 @@ void load_particles_cubep3m_zip2015(char *filename, struct particle **p, int64_t
 
   fread(&header1, sizeof(struct cubep3m_header),1, zip_fp[0]);
   fread(&header2, sizeof(struct cubep3m_header),1, zip_fp[1]);
+  printf("m_part = %g l:%d\n", header1.mass_p,__LINE__);
   if(header1.mass_p != 8.)
     FORCE_BYTESWAP = 1;
   if(FORCE_BYTESWAP) {
     swap_cubep3m_header(&header1);
     swap_cubep3m_header(&header2);
     if(header1.mass_p != 8.) {
-      printf("mass_p = %g\nExit\n",header1.mass_p );
+      printf("mass_p = %g line:%d\nExit\n",header1.mass_p,__LINE__ );
       exit(1);
     }
   }
+  printf("m_part = %g l:%d\n", header1.mass_p,__LINE__);
   if(header1.np_local != header2.np_local) {
     printf("np_local not consistent.");
     exit(1);
