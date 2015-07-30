@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h>x
+#include <stdlib.h>
 #include <math.h>
 #include <inttypes.h>
 #include <string.h>
