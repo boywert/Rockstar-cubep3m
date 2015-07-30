@@ -13,6 +13,9 @@
 #include "../config.h"
 
 #define CUBEP3M_BUFFER_SIZE 100000
+
+int FORCE_BYTESWAP = 0;
+
 struct cubep3m_header {
   int np_local;
   float a,t,tau;
@@ -28,6 +31,42 @@ struct cubep3m_header_extend {
   float var4; // dummy
 };
 
+void byte_swap(void* input, int len) {
+  unsigned char a;
+  unsigned char* e = (unsigned char *)input;
+  int half = len/2;
+  int i,j;
+  if(len%2 == 1) {
+    fprintf(stderr,"Trying to swap odd-byte thing.\nExit\n");
+    exit(1);
+  }
+#define SWAP(x,y) a=e[x]; e[x]=e[y]; e[y]=a;
+  for(i=0;i<half;i++) {
+    SWAP(i,len-i-1);
+  }
+#undef SWAP
+}  
+
+static inline void swap_cubep3m_header(struct cubep3m_header* h) {
+  byte_swap(&(h->np_local),4);
+  byte_swap(&(h->a),4);
+  byte_swap(&(h->t),4);
+  byte_swap(&(h->tau),4);
+  byte_swap(&(h->nts),4);
+  byte_swap(&(h->dt_f_acc),4); 
+  byte_swap(&(h->dt_pp_acc),4);
+  byte_swap(&(h->dt_c_acc),4);
+  byte_swap(&(h->cur_checkpoint),4);
+  byte_swap(&(h->cur_projection),4);
+  byte_swap(&(h->cur_halofind),4);
+  byte_swap(&(h->mass_p),4);  
+}
+static inline void swap_cubep3m_header_extend(struct cubep3m_header_extend* h) {
+  byte_swap(&(h->v_r2),4);
+}
+void checkswap(struct cubep3m_header* h) {
+  if()
+}
 int string_replace_getblock(char *out, char *in, char *find, char *replace) {
   char *p,*q;
   char buf[1000] = {"\0"};
@@ -68,15 +107,24 @@ int string_replace_getblock(char *out, char *in, char *find, char *replace) {
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
 void cubep3m_read_PID(FILE *fp, int block, int np_local, struct particle **p, int64_t *num_p) {
-  int i,j;
-  int read_n;
+  int64_t i,j;
+  int64_t read_n;
+  int64_t count = 0;
   int64_t buffer[CUBEP3M_BUFFER_SIZE];
   // start after header
   for (j=0;j<=np_local/CUBEP3M_BUFFER_SIZE;j++) {
     read_n = MIN(np_local-j*CUBEP3M_BUFFER_SIZE,CUBEP3M_BUFFER_SIZE);
     fread(buffer, sizeof(int64_t),read_n, fp);
-    for(i=0;i<read_n;i++) 
+    for(i=0;i<read_n;i++) {
+      if(FORCE_BYTESWAP)
+	byte_swap(&(buffer[6*i+j]),8);
       memcpy(&((*p)[(*num_p)+j*CUBEP3M_BUFFER_SIZE+i].id), &(buffer[i]),sizeof(int64_t));  
+      count++;
+    }
+  }
+  if(count != np_local) {
+    fprintf(stderr,"particle not consistent\nExit\n");
+    exit(1);
   }
 }
 
@@ -105,6 +153,10 @@ void cubep3m_read_zip2015(FILE *fp0, FILE *fp1, FILE *fp2, FILE *fp3, int block,
 
   fread(&header1, sizeof(struct cubep3m_header_extend),1, fp0);
   fread(&header2, sizeof(struct cubep3m_header_extend),1, fp1);
+  if(FORCE_BYTESWAP) {
+    swap_cubep3m_header_extend(&header1);
+    swap_cubep3m_header_extend(&header2);
+  }
   if(header1.v_r2 != header2.v_r2) {
     printf("v_r2 not consistent.\n");
     exit(1);
@@ -114,11 +166,16 @@ void cubep3m_read_zip2015(FILE *fp0, FILE *fp1, FILE *fp2, FILE *fp3, int block,
       for(i=0;i<CUBEP3M_NCDIM;i++) {
 	fread(&rhoc_i1,sizeof(uint8_t),1,fp2);
 	rhoc_i4 = (int32_t)rhoc_i1;
-	if(rhoc_i1 == 255)
+	if(rhoc_i1 == 255) {
 	  fread(&rhoc_i4,sizeof(int32_t),1,fp3);
+	  if(FORCE_BYTESWAP)
+	    byte_swap(&rhoc_i4,4);
+	}
 	for(n=0;n<rhoc_i4;n++) {
 	  fread(xi1,sizeof(uint8_t),3,fp0);
 	  fread(vi2,sizeof(int16_t),3,fp1);
+	  if(FORCE_BYTESWAP)
+	    byte_swap(&vi2,2);
 	  (*p)[(*num_p)+cur_p].pos[0] = mesh_scale*(((float)xi1[0]+0.5)/256.+i)*lunit_compute + offset[0];
 	  (*p)[(*num_p)+cur_p].pos[1] = mesh_scale*(((float)xi1[1]+0.5)/256.+j)*lunit_compute + offset[1];
 	  (*p)[(*num_p)+cur_p].pos[2] = mesh_scale*(((float)xi1[2]+0.5)/256.+k)*lunit_compute + offset[2];
@@ -163,11 +220,16 @@ void cubep3m_read_xv(FILE *fp, int block, int np_local, float a, struct particle
     fread(buffer, sizeof(float),read_n*6, fp);
     for(i=0;i<read_n;i++) {
       for(j=0;j<3;j++) {
+	if(FORCE_BYTESWAP)
+	  byte_swap(&(buffer[6*i+j]),4);
 	buffer[6*i+j] *= lunit_compute;
 	buffer[6*i+j] += offset[j];
       }
-      for(j=3;j<6;j++)
+      for(j=3;j<6;j++) {
+	if(FORCE_BYTESWAP)
+	  byte_swap(&(buffer[6*i+j]),4);
 	buffer[6*i+j] *= vunit_compute;
+      }
       memcpy(&((*p)[(*num_p)+k*CUBEP3M_BUFFER_SIZE+i].pos[0]),&(buffer[6*i]),sizeof(float)*6);    
     }
   }
@@ -196,6 +258,15 @@ void load_particles_cubep3m_zip2015(char *filename, struct particle **p, int64_t
 
   fread(&header1, sizeof(struct cubep3m_header),1, zip_fp[0]);
   fread(&header2, sizeof(struct cubep3m_header),1, zip_fp[1]);
+  if(header1.mass_p != 8.)
+    FORCE_BYTESWAP = 1;
+  if(FORCE_BYTESWAP) {
+    swap_cubep3m_header(*header1);
+    if(header1.mass_p != 8.) {
+      printf("mass_p = %g\nExit\n");
+      exit(1);
+    }
+  }
   if(header1.np_local != header2.np_local) {
     printf("np_local not consistent.");
     exit(1);
@@ -212,7 +283,6 @@ void load_particles_cubep3m_zip2015(char *filename, struct particle **p, int64_t
   AVG_PARTICLE_SPACING = cbrt(PARTICLE_MASS / (Om*CRITICAL_DENSITY));
 
   if(CUBEP3M_PID == 1) {
-    IGNORE_PARTICLE_IDS = 0;
     input = check_fopen(PIDfile,"rb");
     fread(&header2, sizeof(struct cubep3m_header),1, input);
     if(header1.np_local != header2.np_local) {
@@ -245,6 +315,15 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
 
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
+  if(header1.mass_p != 8.)
+    FORCE_BYTESWAP = 1;
+  if(FORCE_BYTESWAP) {
+    swap_cubep3m_header(*header1);
+    if(header1.mass_p != 8.) {
+      printf("mass_p = %g\nExit\n");
+      exit(1);
+    }
+  }
   *p = (struct particle *)check_realloc(*p, ((*num_p)+header1.np_local)*sizeof(struct particle), "Allocating particles.");
 
   cubep3m_read_xv(input, block, header1.np_local, header1.a, p, num_p);
@@ -259,6 +338,8 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   if(CUBEP3M_PID == 1) {
     input = check_fopen(PIDfile,"rb");
     fread(&header2, sizeof(struct cubep3m_header),1, input);
+    if(FORCE_BYTESWAP)
+      swap_cubep3m_header(*header2);
     if(header1.np_local != header2.np_local) {
       printf("np_local not consistent.");
       exit(1);
@@ -274,3 +355,5 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   }
   *num_p += header1.np_local;
 }
+
+ 
