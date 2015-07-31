@@ -175,7 +175,7 @@ void cubep3m_read_zip2015(FILE *fp0, FILE *fp1, FILE *fp2, FILE *fp3, int block,
 	  if(FORCE_BYTESWAP) {
 	    byte_swap(&(vi2[0]),2);
 	    byte_swap(&(vi2[1]),2);
-	    byte_swap(&(vi2[1]),2);
+	    byte_swap(&(vi2[2]),2);
 	  }
 	  (*p)[(*num_p)+cur_p].pos[0] = mesh_scale*(((float)xi1[0]+0.5)/256.+i)*lunit_compute + offset[0];
 	  (*p)[(*num_p)+cur_p].pos[1] = mesh_scale*(((float)xi1[1]+0.5)/256.+j)*lunit_compute + offset[1];
@@ -259,7 +259,6 @@ void load_particles_cubep3m_zip2015(char *filename, struct particle **p, int64_t
 
   fread(&header1, sizeof(struct cubep3m_header),1, zip_fp[0]);
   fread(&header2, sizeof(struct cubep3m_header),1, zip_fp[1]);
-  printf("m_part = %g l:%d\n", header1.mass_p,__LINE__);
   if(header1.mass_p != 8.)
     FORCE_BYTESWAP = 1;
   if(FORCE_BYTESWAP) {
@@ -270,7 +269,6 @@ void load_particles_cubep3m_zip2015(char *filename, struct particle **p, int64_t
       exit(1);
     }
   }
-  printf("m_part = %g l:%d\n", header1.mass_p,__LINE__);
   if(header1.np_local != header2.np_local) {
     printf("np_local not consistent.");
     exit(1);
