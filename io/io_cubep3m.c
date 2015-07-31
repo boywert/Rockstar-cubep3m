@@ -115,7 +115,7 @@ void cubep3m_read_PID(FILE *fp, int block, int np_local, struct particle **p, in
     fread(buffer, sizeof(int64_t),read_n, fp);
     for(i=0;i<read_n;i++) {
       if(FORCE_BYTESWAP)
-	byte_swap(&(buffer[6*i+j]),8);
+	byte_swap(&(buffer[i]),8);
       memcpy(&((*p)[(*num_p)+j*CUBEP3M_BUFFER_SIZE+i].id), &(buffer[i]),sizeof(int64_t));  
       count++;
     }
@@ -172,8 +172,11 @@ void cubep3m_read_zip2015(FILE *fp0, FILE *fp1, FILE *fp2, FILE *fp3, int block,
 	for(n=0;n<rhoc_i4;n++) {
 	  fread(xi1,sizeof(uint8_t),3,fp0);
 	  fread(vi2,sizeof(int16_t),3,fp1);
-	  if(FORCE_BYTESWAP)
-	    byte_swap(&vi2,2);
+	  if(FORCE_BYTESWAP) {
+	    byte_swap(&(vi2[0]),2);
+	    byte_swap(&(vi2[1]),2);
+	    byte_swap(&(vi2[1]),2);
+	  }
 	  (*p)[(*num_p)+cur_p].pos[0] = mesh_scale*(((float)xi1[0]+0.5)/256.+i)*lunit_compute + offset[0];
 	  (*p)[(*num_p)+cur_p].pos[1] = mesh_scale*(((float)xi1[1]+0.5)/256.+j)*lunit_compute + offset[1];
 	  (*p)[(*num_p)+cur_p].pos[2] = mesh_scale*(((float)xi1[2]+0.5)/256.+k)*lunit_compute + offset[2];
