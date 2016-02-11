@@ -13,7 +13,7 @@ b_to_a, c_to_a, A[3], klypin_rs, kin_to_pot, m_all, m_pe_b, m_pe_d, \
 halfmass_radius;
 #include "read_tree.h"
 
-double BOX_SIZE=250;
+double BOX_SIZE=6000;
 
 struct halo_list all_halos = {0};
 struct halo_tree halo_tree = {0};
