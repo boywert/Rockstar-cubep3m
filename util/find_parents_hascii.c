@@ -103,9 +103,9 @@ void read_hlist(char *filename) {
       if (c==0) {
         c=1;
         buffer[strlen(buffer)-1] = 0;
-        printf("%s PID\n", buffer);
+        // printf("%s PID\n", buffer);
       } else {
-        printf("%s", buffer);
+        // printf("%s", buffer);
       }
     }
     n = stringparse(buffer, data, (enum parsetype *)types, NUM_INPUTS);
@@ -118,7 +118,6 @@ void read_hlist(char *filename) {
   }
   fclose(input);
   printf(" nhalos  = %" PRId64 "\n",all_halos.num_halos);
-  exit(0);
   all_halos.halos = check_realloc(all_halos.halos, sizeof(struct halo)*all_halos.num_halos, "Allocating Halos.");
 
   for (n=0; n<all_halos.num_halos; n++) {
