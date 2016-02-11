@@ -112,6 +112,7 @@ void read_hlist(char *filename) {
     if (n<NUM_INPUTS) continue;
     if (!(all_halos.num_halos%3000))
     all_halos.halos = check_realloc(all_halos.halos, sizeof(struct halo)*(all_halos.num_halos+3000), "Allocating Halos.");
+    h.rvir *= 100.;
     h.descid = -1;
     printf("rvir = %f\n",h.rvir);
     all_halos.halos[all_halos.num_halos] = h;
