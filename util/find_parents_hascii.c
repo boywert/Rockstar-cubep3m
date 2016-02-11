@@ -117,7 +117,8 @@ void read_hlist(char *filename) {
     all_halos.num_halos++;
   }
   fclose(input);
-
+  printf(" nhalos  = %" PRId64 "\n",all_halos.num_halos);
+  exit(0);
   all_halos.halos = check_realloc(all_halos.halos, sizeof(struct halo)*all_halos.num_halos, "Allocating Halos.");
 
   for (n=0; n<all_halos.num_halos; n++) {
