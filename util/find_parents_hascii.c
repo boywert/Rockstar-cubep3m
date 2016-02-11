@@ -33,7 +33,7 @@ void read_hlist(char *filename) {
   char buffer[1024];
   float dummy;
   SHORT_PARSETYPE;
-  #define NUM_INPUTS 36
+  #define NUM_INPUTS 54
 /*  enum short_parsetype stypes[NUM_INPUTS] =
   { D64, D64, F, F, F,  //  #id desc_id mvir vmax vrms
     F, F, D64, F,       //  Rvir Rs Np x
@@ -47,7 +47,6 @@ void read_hlist(char *filename) {
   enum short_parsetype stypes[NUM_INPUTS] =
   { D64,
     D64, F, F, F,
-    F, F, F,
     F, F, F,
     F, F, F,
     F, F, F,
