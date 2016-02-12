@@ -107,9 +107,9 @@ void read_hlist(char *filename, int nfiles) {
         if (c==0) {
           c=1;
           buffer[strlen(buffer)-1] = 0;
-          // printf("%s PID\n", buffer);
+          printf("%s PID\n", buffer);
         } else {
-          // printf("%s", buffer);
+          printf("%s", buffer);
         }
       }
       n = stringparse(buffer, data, (enum parsetype *)types, NUM_INPUTS);
