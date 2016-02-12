@@ -26,9 +26,10 @@ struct halo_tree halo_tree = {0};
 #include "../parents.c"
 #undef parent
 
-void read_hlist(char *filename) {
-  int64_t n, c=0;
+void read_hlist(char *filename, int nfiles) {
+  int64_t n, c=0, ifile;
   FILE *input;
+  char fname[1024];
   struct halo h = {0};
   char buffer[1024];
   float dummy;
@@ -97,29 +98,31 @@ void read_hlist(char *filename) {
 
 
   for (n=0; n<NUM_INPUTS; n++) types[n] = stypes[n];
-  input = check_fopen(filename, "r");
-  while (fgets(buffer, 1024, input)) {
-    if (buffer[0] == '#') {
-      if (c==0) {
-        c=1;
-        buffer[strlen(buffer)-1] = 0;
-        // printf("%s PID\n", buffer);
-      } else {
-        // printf("%s", buffer);
+  for (ifile = 0; ifile < nfiles; ifile++) {
+    sprintf(fname, "%s.%d.ascii",filename,(int)ifile);
+    input = check_fopen(filename, "r");
+    while (fgets(buffer, 1024, input)) {
+      if (buffer[0] == '#') {
+        if (c==0) {
+          c=1;
+          buffer[strlen(buffer)-1] = 0;
+          // printf("%s PID\n", buffer);
+        } else {
+          // printf("%s", buffer);
+        }
       }
+      n = stringparse(buffer, data, (enum parsetype *)types, NUM_INPUTS);
+      if (n<NUM_INPUTS) continue;
+      if (!(all_halos.num_halos%3000))
+      all_halos.halos = check_realloc(all_halos.halos, sizeof(struct halo)*(all_halos.num_halos+3000), "Allocating Halos.");
+      h.descid = -1;
+      all_halos.halos[all_halos.num_halos] = h;
+      all_halos.num_halos++;
     }
-    n = stringparse(buffer, data, (enum parsetype *)types, NUM_INPUTS);
-    if (n<NUM_INPUTS) continue;
-    if (!(all_halos.num_halos%3000))
-    all_halos.halos = check_realloc(all_halos.halos, sizeof(struct halo)*(all_halos.num_halos+3000), "Allocating Halos.");
-    h.descid = -1;
-    all_halos.halos[all_halos.num_halos] = h;
-    all_halos.num_halos++;
+    fclose(input);
+    printf(" nhalos  = %" PRId64 "\n",all_halos.num_halos);
+    all_halos.halos = check_realloc(all_halos.halos, sizeof(struct halo)*all_halos.num_halos, "Allocating Halos.");
   }
-  fclose(input);
-  printf(" nhalos  = %" PRId64 "\n",all_halos.num_halos);
-  all_halos.halos = check_realloc(all_halos.halos, sizeof(struct halo)*all_halos.num_halos, "Allocating Halos.");
-
   for (n=0; n<all_halos.num_halos; n++) {
     all_halos.halos[n].vmax_r = all_halos.halos[n].rvir;
   }
@@ -142,11 +145,13 @@ void read_hlist(char *filename) {
 }
 
 int main(int argc, char **argv) {
-  if (argc < 2) {
+  int nfiles;
+  if (argc < 3) {
     printf("Usage: %s hlist box_size\n", argv[0]);
     exit(1);
   }
-  if (argc > 2) BOX_SIZE = atof(argv[2]);
+  if (argc > 3) BOX_SIZE = atof(argv[2]);
+  sscanf(argv[3],"%d",&nfiles)
   read_hlist(argv[1]);
   return 0;
 }
