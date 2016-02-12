@@ -45,7 +45,7 @@ void byte_swap(void* input, int len) {
     SWAP(i,len-i-1);
   }
 #undef SWAP
-}  
+}
 
 static inline void swap_cubep3m_header(struct cubep3m_header* h) {
   byte_swap(&(h->np_local),4);
@@ -53,13 +53,13 @@ static inline void swap_cubep3m_header(struct cubep3m_header* h) {
   byte_swap(&(h->t),4);
   byte_swap(&(h->tau),4);
   byte_swap(&(h->nts),4);
-  byte_swap(&(h->dt_f_acc),4); 
+  byte_swap(&(h->dt_f_acc),4);
   byte_swap(&(h->dt_pp_acc),4);
   byte_swap(&(h->dt_c_acc),4);
   byte_swap(&(h->cur_checkpoint),4);
   byte_swap(&(h->cur_projection),4);
   byte_swap(&(h->cur_halofind),4);
-  byte_swap(&(h->mass_p),4);  
+  byte_swap(&(h->mass_p),4);
 }
 static inline void swap_cubep3m_header_extend(struct cubep3m_header_extend* h) {
   byte_swap(&(h->v_r2),4);
@@ -116,7 +116,7 @@ void cubep3m_read_PID(FILE *fp, int block, int np_local, struct particle **p, in
     for(i=0;i<read_n;i++) {
       if(FORCE_BYTESWAP)
 	byte_swap(&(buffer[i]),8);
-      memcpy(&((*p)[(*num_p)+j*CUBEP3M_BUFFER_SIZE+i].id), &(buffer[i]),sizeof(int64_t));  
+      memcpy(&((*p)[(*num_p)+j*CUBEP3M_BUFFER_SIZE+i].id), &(buffer[i]),sizeof(int64_t));
       count++;
     }
   }
@@ -138,9 +138,9 @@ void cubep3m_read_zip2015(FILE *fp0, FILE *fp1, FILE *fp2, FILE *fp3, int block,
   int cur_p = 0;
   float mesh_scale = 2.*CUBEP3M_NP/CUBEP3M_NDIM/CUBEP3M_NCDIM;
   struct cubep3m_header_extend header1,header2;
-  
-  for(k=0;k<CUBEP3M_NDIM;k++) 
-    for(j=0;j<CUBEP3M_NDIM;j++) 
+
+  for(k=0;k<CUBEP3M_NDIM;k++)
+    for(j=0;j<CUBEP3M_NDIM;j++)
       for(i=0;i<CUBEP3M_NDIM;i++) {
 	if(block == i+j*CUBEP3M_NDIM+k*CUBEP3M_NDIM*CUBEP3M_NDIM) {
 	  offset[0] = (float)i*BOX_SIZE/(float)CUBEP3M_NDIM;
@@ -160,7 +160,7 @@ void cubep3m_read_zip2015(FILE *fp0, FILE *fp1, FILE *fp2, FILE *fp3, int block,
     exit(1);
   }
   for(k=0;k<CUBEP3M_NCDIM;k++)
-    for(j=0;j<CUBEP3M_NCDIM;j++) 
+    for(j=0;j<CUBEP3M_NCDIM;j++)
       for(i=0;i<CUBEP3M_NCDIM;i++) {
 	fread(&rhoc_i1,sizeof(uint8_t),1,fp2);
 	rhoc_i4 = (int32_t)rhoc_i1;
@@ -205,9 +205,9 @@ void cubep3m_read_xv(FILE *fp, int block, int np_local, float a, struct particle
   int read_n;
   float offset[3] = {0.};
   float buffer[6*CUBEP3M_BUFFER_SIZE];
-  
-  for(k=0;k<CUBEP3M_NDIM;k++) 
-    for(j=0;j<CUBEP3M_NDIM;j++) 
+
+  for(k=0;k<CUBEP3M_NDIM;k++)
+    for(j=0;j<CUBEP3M_NDIM;j++)
       for(i=0;i<CUBEP3M_NDIM;i++) {
 	if(block == i+j*CUBEP3M_NDIM+k*CUBEP3M_NDIM*CUBEP3M_NDIM) {
 	  offset[0] = (float)i*BOX_SIZE/(float)CUBEP3M_NDIM;
@@ -231,7 +231,7 @@ void cubep3m_read_xv(FILE *fp, int block, int np_local, float a, struct particle
 	  byte_swap(&(buffer[6*i+j]),4);
 	buffer[6*i+j] *= vunit_compute;
       }
-      memcpy(&((*p)[(*num_p)+k*CUBEP3M_BUFFER_SIZE+i].pos[0]),&(buffer[6*i]),sizeof(float)*6);    
+      memcpy(&((*p)[(*num_p)+k*CUBEP3M_BUFFER_SIZE+i].pos[0]),&(buffer[6*i]),sizeof(float)*6);
     }
   }
 }
@@ -278,7 +278,7 @@ void load_particles_cubep3m_zip2015(char *filename, struct particle **p, int64_t
   cubep3m_read_zip2015(zip_fp[0],zip_fp[1],zip_fp[2],zip_fp[3], block, header1.np_local, header1.a, p, num_p);
   for(i=0;i<4;i++)
     fclose(zip_fp[i]);
-  
+
   TOTAL_PARTICLES = (int64_t)CUBEP3M_NP*(int64_t)CUBEP3M_NP*(int64_t)CUBEP3M_NP;
   SCALE_NOW = header1.a;
   PARTICLE_MASS = Om*CRITICAL_DENSITY * pow(BOX_SIZE, 3) / TOTAL_PARTICLES;
@@ -287,7 +287,7 @@ void load_particles_cubep3m_zip2015(char *filename, struct particle **p, int64_t
   if(CUBEP3M_PID == 1) {
     input = check_fopen(PIDfile,"rb");
     fread(&header2, sizeof(struct cubep3m_header),1, input);
-    if(FORCE_BYTESWAP) 
+    if(FORCE_BYTESWAP)
       swap_cubep3m_header(&header2);
     if(header1.np_local != header2.np_local) {
       printf("np_local not consistent.\n");
@@ -319,8 +319,10 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
 
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
-  if(header1.mass_p != 8.)
+  if(header1.mass_p != 8.) {
+    printf("mass_p = %g\n",header1.mass_p);
     FORCE_BYTESWAP = 1;
+  }
   if(FORCE_BYTESWAP) {
     swap_cubep3m_header(&header1);
     if(header1.mass_p != 8.) {
@@ -332,7 +334,7 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
 
   cubep3m_read_xv(input, block, header1.np_local, header1.a, p, num_p);
   fclose(input);
-  
+
   TOTAL_PARTICLES = (int64_t)CUBEP3M_NP*(int64_t)CUBEP3M_NP*(int64_t)CUBEP3M_NP;
   SCALE_NOW = header1.a;
   PARTICLE_MASS = Om*CRITICAL_DENSITY * pow(BOX_SIZE, 3) / TOTAL_PARTICLES;
@@ -359,5 +361,3 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
   }
   *num_p += header1.np_local;
 }
-
- 
