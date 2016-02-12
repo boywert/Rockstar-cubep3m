@@ -152,6 +152,6 @@ int main(int argc, char **argv) {
   }
   if (argc > 3) BOX_SIZE = atof(argv[2]);
   sscanf(argv[3],"%d",&nfiles);
-  read_hlist(argv[1]);
+  read_hlist(argv[1],nfiles);
   return 0;
 }
