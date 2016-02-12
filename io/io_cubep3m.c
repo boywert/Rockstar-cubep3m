@@ -319,13 +319,12 @@ void load_particles_cubep3m(char *filename, struct particle **p, int64_t *num_p)
 
   input = check_fopen(xvfile,"rb");
   fread(&header1, sizeof(struct cubep3m_header),1, input);
-  if(header1.mass_p != 8.) {
-    printf("mass_p = %g\n",header1.mass_p);
+  if(header1.mass_p < 7.999 || header1.mass_p > 8.001) {
     FORCE_BYTESWAP = 1;
   }
   if(FORCE_BYTESWAP) {
     swap_cubep3m_header(&header1);
-    if(header1.mass_p != 8.) {
+    if(header1.mass_p < 7.999 || header1.mass_p > 8.001)) {
       printf("mass_p = %g\nExit\n",header1.mass_p);
       exit(1);
     }
