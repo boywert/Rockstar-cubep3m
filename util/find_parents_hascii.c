@@ -100,6 +100,7 @@ void read_hlist(char *filename, int nfiles) {
   for (n=0; n<NUM_INPUTS; n++) types[n] = stypes[n];
   for (ifile = 0; ifile < nfiles; ifile++) {
     sprintf(fname, "%s.%d.ascii",filename,(int)ifile);
+    printf("Reading %s\n",fname);
     input = check_fopen(fname, "r");
     while (fgets(buffer, 1024, input)) {
       if (buffer[0] == '#') {
