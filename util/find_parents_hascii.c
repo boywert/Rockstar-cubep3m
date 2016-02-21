@@ -98,34 +98,33 @@ void read_hlist(char *filename, int nfiles) {
 
 
   for (n=0; n<NUM_INPUTS; n++) types[n] = stypes[n];
-  for (ifile = nfiles; ifile < nfiles; ifile++) {
-    sprintf(fname, "%s.%d.ascii",filename,(int)ifile);
-    printf("Reading %s\n",fname);
-    input = check_fopen(fname, "r");
-    while (fgets(buffer, 1024, input)) {
-      if (buffer[0] == '#') {
-        if (c==0) {
-          c=1;
-          buffer[strlen(buffer)-1] = 0;
-          printf("%s PID\n", buffer);
-        } else {
-          printf("%s", buffer);
-        }
+  ifile = nfiles;
+  sprintf(fname, "%s.%d.ascii",filename,(int)ifile);
+  printf("Reading %s\n",fname);
+  input = check_fopen(fname, "r");
+  while (fgets(buffer, 1024, input)) {
+    if (buffer[0] == '#') {
+      if (c==0) {
+        c=1;
+        buffer[strlen(buffer)-1] = 0;
+        // printf("%s PID\n", buffer);
+      } else {
+        // printf("%s", buffer);
       }
-      n = stringparse(buffer, data, (enum parsetype *)types, NUM_INPUTS);
-      if (n<NUM_INPUTS) continue;
-      if (!(all_halos.num_halos%3000)) {
-        printf("allocate\n");
-        all_halos.halos = check_realloc(all_halos.halos, sizeof(struct halo)*(all_halos.num_halos+3000), "Allocating Halos.");
-      }
-      h.descid = -1;
-      all_halos.halos[all_halos.num_halos] = h;
-      all_halos.num_halos++;
     }
-    fclose(input);
-    printf(" nhalos  = %" PRId64 "\n",all_halos.num_halos);
-    all_halos.halos = check_realloc(all_halos.halos, sizeof(struct halo)*all_halos.num_halos, "Allocating Halos.");
+    n = stringparse(buffer, data, (enum parsetype *)types, NUM_INPUTS);
+    if (n<NUM_INPUTS) continue;
+    if (!(all_halos.num_halos%3000)) {
+      all_halos.halos = check_realloc(all_halos.halos, sizeof(struct halo)*(all_halos.num_halos+3000), "Allocating Halos.");
+    }
+    h.descid = -1;
+    all_halos.halos[all_halos.num_halos] = h;
+    all_halos.num_halos++;
   }
+  fclose(input);
+  printf(" nhalos  = %" PRId64 "\n",all_halos.num_halos);
+  all_halos.halos = check_realloc(all_halos.halos, sizeof(struct halo)*all_halos.num_halos, "Allocating Halos.");
+
   for (n=0; n<all_halos.num_halos; n++) {
     all_halos.halos[n].vmax_r = all_halos.halos[n].rvir;
   }
@@ -143,7 +142,6 @@ void read_hlist(char *filename, int nfiles) {
     // th->alt_m[3], th->Xoff, th->Voff, th->bullock_spin, th->b_to_a,
     // th->c_to_a, th->A[0], th->A[1], th->A[2], th->kin_to_pot,
     // th->m_pe_b, th->m_pe_d, th->halfmass_radius, th->pid);
-
   }
 }
 
