@@ -115,7 +115,6 @@ void read_hlist(char *filename, int nfiles) {
       n = stringparse(buffer, data, (enum parsetype *)types, NUM_INPUTS);
       if (n<NUM_INPUTS) continue;
       if (!(all_halos.num_halos%3000)) {
-        printf("allocate\n");
         all_halos.halos = check_realloc(all_halos.halos, sizeof(struct halo)*(all_halos.num_halos+3000), "Allocating Halos.");
       }
       h.descid = -1;
