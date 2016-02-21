@@ -96,7 +96,7 @@ void read_hlist(char *filename, int nfiles) {
     &(h.A[1]), &(h.A[2]), &(h.kin_to_pot),
     &(h.m_pe_b), &(h.m_pe_d), &(h.halfmass_radius)};*/
 
-
+  all_halos.num_halos = 0;
   for (n=0; n<NUM_INPUTS; n++) types[n] = stypes[n];
   ifile = nfiles;
   sprintf(fname, "%s.%d.ascii",filename,(int)ifile);
@@ -143,8 +143,8 @@ void read_hlist(char *filename, int nfiles) {
     // th->c_to_a, th->A[0], th->A[1], th->A[2], th->kin_to_pot,
     // th->m_pe_b, th->m_pe_d, th->halfmass_radius, th->pid);
   }
-  all_halos = {0};
-  halo_tree = {0};
+  all_halos.num_halos = 1;
+  all_halos.halos = check_realloc(all_halos.halos, sizeof(struct halo)*all_halos.num_halos, "Allocating Halos.");
 }
 
 int main(int argc, char **argv) {
