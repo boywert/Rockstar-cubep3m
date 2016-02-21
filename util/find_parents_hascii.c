@@ -134,14 +134,14 @@ void read_hlist(char *filename, int nfiles) {
   for (n=0; n<all_halos.num_halos; n++) {
     struct halo *th = all_halos.halos + n;
 
-    printf("%"PRId64" %"PRId64" %.3e %.2f %.2f %.3f %.3f %"PRId64" %.5f %.5f %.5f %.2f %.2f %.2f %.3e %.3e %.3e %.5f %.5f %.4e %.4e %.4e %.4e %.4e %.5f %.2f %.5f %.5f %.5f %.5f %.5f %.5f %.4f %.3e %.3e %.3f %"PRId64"\n",
-    th->id, th->descid, th->mvir, th->vmax, th->vrms, th->rvir, th->rs,
-    th->np, th->pos[0], th->pos[1], th->pos[2], th->vel[0], th->vel[1],
-    th->vel[2], th->J[0], th->J[1], th->J[2], th->spin,
-    th->klypin_rs, th->m_all, th->alt_m[0], th->alt_m[1], th->alt_m[2],
-    th->alt_m[3], th->Xoff, th->Voff, th->bullock_spin, th->b_to_a,
-    th->c_to_a, th->A[0], th->A[1], th->A[2], th->kin_to_pot,
-    th->m_pe_b, th->m_pe_d, th->halfmass_radius, th->pid);
+    // printf("%"PRId64" %"PRId64" %.3e %.2f %.2f %.3f %.3f %"PRId64" %.5f %.5f %.5f %.2f %.2f %.2f %.3e %.3e %.3e %.5f %.5f %.4e %.4e %.4e %.4e %.4e %.5f %.2f %.5f %.5f %.5f %.5f %.5f %.5f %.4f %.3e %.3e %.3f %"PRId64"\n",
+    // th->id, th->descid, th->mvir, th->vmax, th->vrms, th->rvir, th->rs,
+    // th->np, th->pos[0], th->pos[1], th->pos[2], th->vel[0], th->vel[1],
+    // th->vel[2], th->J[0], th->J[1], th->J[2], th->spin,
+    // th->klypin_rs, th->m_all, th->alt_m[0], th->alt_m[1], th->alt_m[2],
+    // th->alt_m[3], th->Xoff, th->Voff, th->bullock_spin, th->b_to_a,
+    // th->c_to_a, th->A[0], th->A[1], th->A[2], th->kin_to_pot,
+    // th->m_pe_b, th->m_pe_d, th->halfmass_radius, th->pid);
   }
 }
 
