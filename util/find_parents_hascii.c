@@ -143,6 +143,8 @@ void read_hlist(char *filename, int nfiles) {
     // th->c_to_a, th->A[0], th->A[1], th->A[2], th->kin_to_pot,
     // th->m_pe_b, th->m_pe_d, th->halfmass_radius, th->pid);
   }
+  all_halos = {0};
+  halo_tree = {0};
 }
 
 int main(int argc, char **argv) {
