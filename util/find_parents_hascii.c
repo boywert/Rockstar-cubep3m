@@ -145,7 +145,7 @@ void read_hlist(char *filename, int nfiles) {
     // th->m_pe_b, th->m_pe_d, th->halfmass_radius, th->pid);
   }
   all_halos.num_halos = 0;
-  free(all_halos.halos);
+  all_halos.halos = check_realloc(all_halos.halos, sizeof(struct halo)*(all_halos.num_halos), "Allocating Halos.");
 }
 
 int main(int argc, char **argv) {
