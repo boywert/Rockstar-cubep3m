@@ -18,6 +18,6 @@ The required format of either CUBEP3M or ZCUBEP3M can be used in the format;
 
 	- FILENAME = “[directory]/<snap>xvPID<block>.dat” (for CUBEP3M), 
   	or 
-  	FILENAME = “[directory]/node<snap>/<snap>xvPID<block>.dat” (for ZCUBEP3M)
+  	- FILENAME = “[directory]/node<snap>/<snap>xvPID<block>.dat” (for ZCUBEP3M)
 
 where "<snap>xvPID<block>.dat” will be changed to the correct filename format in the reading routine. The string “xvPID” is the string to be searched and replaced. It can be changed to any strings to suit the application.
